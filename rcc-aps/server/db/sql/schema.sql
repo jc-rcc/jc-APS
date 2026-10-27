@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS payroll_records (
   pag           DECIMAL(12,2) NOT NULL DEFAULT 0,
   bir           DECIMAL(12,2) NOT NULL DEFAULT 0,
   cash          DECIMAL(12,2) NOT NULL DEFAULT 0,
-  bonuses       MEDIUMTEXT NOT NULL DEFAULT '[]',
+  bonuses       MEDIUMTEXT NOT NULL,
   subjectBreakdown TEXT,
   customDeds    TEXT,
   salaryBase    DECIMAL(12,2) NULL,
