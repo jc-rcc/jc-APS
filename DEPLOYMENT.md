@@ -4,13 +4,15 @@
 
 JC-APS is an independent academic copy of the RCC Automated Payroll System, deployed only from **https://github.com/jc-rcc/jc-APS**. The original `jc-rcc/rcc-aps` checkout, hosting project and MySQL database are not changed or reused.
 
-The assignment application is live at **https://jc-aps.vercel.app**. Its separate Supabase project **`jc-aps`** is hosted in **Tokyo (`ap-northeast-1`)**. The database schema and three demo accounts have been provisioned, and the database connection uses verified TLS.
+The assignment application is live at **https://jc-aps.vercel.app**. Its separate Supabase project **`jc-aps`** is hosted in **Tokyo (`ap-northeast-1`)**. The database schema and three demo accounts are provisioned, and database connections use verified TLS.
 
-**Status verified on 27 October 2026:** the live page and `/api/health` return HTTP 200; the API identifies PostgreSQL as its database. Admin password login has been verified on the live application. Admin, finance and employee login/data access have also been tested through the local API against the assignment Supabase database. These checks do not replace full manual verification of payroll workflows.
+**Verified on 27 October 2026:** an application source push automatically triggered both GitHub Actions and the connected Vercel project. All Actions jobs passed, including the production verification job. The live API reported the exact deployed source revision, `cbbfb61700aeeca3419b63248a193fe99a2dd952`.
 
-The latest live recheck confirms admin login and authenticated data access. Finance and employee login attempts using their current local `.env` password values returned HTTP 401; reconcile those local password values with the provisioned accounts before supplying them to the evaluator. No credentials are included in this repository or report.
+- [Successful complete workflow run](https://github.com/jc-rcc/jc-APS/actions/runs/40463563344)
+- [Vercel deployment record](https://vercel.com/jcs-projects-03dd9d3c/jc-aps/6Mv3tGHVqDeU3jX6BMqJb42xsBbT)
+- [Public API health](https://jc-aps.vercel.app/api/health)
 
-**Remaining CI/CD requirement:** GitHub Actions successfully installs dependencies and passes syntax, smoke and PostgreSQL integration tests. Its production deployment job is configured but has not completed successfully: the latest checked run stops at the missing Vercel credentials check. Add `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` to GitHub's `production` environment, then verify a successful build-and-deploy run before claiming the final assignment is complete. The initial live application was published through the Vercel dashboard/Git project setup.
+Live admin, finance and employee password logins and authenticated data reads have been verified. Employee data is scoped to that employee. PostgreSQL integration tests also cover persistence, transaction rollback, role restrictions and conflicting concurrent saves. These checks do not replace full manual acceptance testing of every payroll scenario. Credentials remain outside the repository and report.
 
 ## 1. Architecture and infrastructure choice
 
@@ -23,7 +25,8 @@ The frontend is vanilla HTML/CSS/JavaScript in `rcc-aps/public`. It calls same-o
 ```text
 Browser -- HTTPS --> Vercel Express API -- verified TLS --> Supabase pooler
                                                        --> PostgreSQL jc_aps schema
-GitHub main --> npm ci --> syntax/smoke/PostgreSQL tests --> build --> deploy
+GitHub main --> Actions checks with disposable PostgreSQL --> verify live revision
+           --> Vercel install --> syntax/smoke tests --> build --> deploy
 ```
 
 ### Changes required by PostgreSQL
@@ -52,21 +55,30 @@ The app reads broad state snapshots, serializes writes and stores profile photos
 | Local/on-premise | Can suit private institutional tools. Public class access would require dependable uptime, TLS, networking and maintenance. A developer laptop alone is not a dependable live submission. |
 | Vercel + managed MySQL/TiDB | Preserves the original SQL dialect, but the chosen assignment stack is Supabase. PostgreSQL conversion costs extra implementation effort, accepted in exchange for one managed database dashboard and its pooling tools. |
 
-## 3. Automated CI/CD
+## 3. Automated CI and CD
 
-Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It runs on pull requests targeting `main` and pushes/merges to `main`.
+Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Application/configuration changes pushed or merged to `main` trigger Actions and Vercel's connected Git integration. Pull requests run Actions checks. Documentation-only updates outside the app do not require a new application deployment.
 
-The steps below describe the configured pipeline. CI is verified; automatic production deployment remains blocked by missing GitHub deployment secrets. [Checked run: CI passed, deployment credentials missing](https://github.com/jc-rcc/jc-APS/actions/runs/40454275443).
+### GitHub Actions checks
 
 1. Check out source and install Node.js 22.
-2. Run `npm ci` against the application lockfile.
-3. Run JavaScript syntax checks and smoke tests, including real HTTP checks for the serverless entry, frontend assets, health response and protected API routes.
-4. Test schema setup/repeated setup, stable row IDs, rollback, foreign keys, unique payroll periods, half-day leave, data persistence, role restrictions, concurrent-save conflicts and Google authentication against a disposable PostgreSQL 16 service. Integration tests create/drop isolated local test databases and refuse remote/cloud test servers.
-5. After `checks` succeeds, deploy only on a push to **`jc-rcc/jc-APS:main`**. PRs never deploy production or receive deployment secrets.
-6. Install the locked Vercel CLI, pull production configuration, run `vercel build --prod`, then `vercel deploy --prebuilt --prod`. Application deployment is automated; there are no manual file uploads.
-7. Record the deployment URL in the Actions summary and check public HTML and `/api/health`. That probe checks application/API availability, not SQL connectivity or role-based workflows. Failure marks the run failed but does not automatically undo a published release.
+2. Install locked application dependencies with `npm ci`.
+3. Run `npm run lint` and `npm test`: JavaScript syntax checks and 15 smoke-test files, including HTTP checks of the serverless handler and protected routes.
+4. Run state/persistence and Google authentication integration tests against a disposable PostgreSQL 16 service. Tests cover repeated setup, stable row IDs, rollback, foreign keys, unique periods, half-day leave, role restrictions and concurrent saves. Test databases are isolated, and remote/cloud database servers are refused by the test fixture.
 
-Production jobs are serialized. Require `checks` through branch protection before merging. Leave automatic Vercel Git deployment disconnected/disabled to prevent bypassing the test gate. Do not add required human approval on the GitHub `production` environment if the course requires fully automatic CD. One-time database provisioning is separate from application release; routine deployment never reseeds payroll data.
+### Vercel automatic build and release
+
+The existing Vercel Git integration starts a deployment from the same source push. Its Node builder installs dependencies and runs the application's `vercel-build` script, defined in [`rcc-aps/package.json`](rcc-aps/package.json): **`npm run lint && npm test`**. If either command fails, the build fails before publication. The builder then packages the Express function and publishes the new production deployment.
+
+Vercel and Actions start independently from the same push. Vercel's own syntax/smoke checks are the publication gate; Vercel does not wait automatically for the external Actions PostgreSQL integration job. Requiring Actions checks before merging is the recommended repository protection for that additional gate.
+
+### Verify the actual production release
+
+After the Actions `checks` job passes, the `deploy` job reads the commit's **Vercel** status through the automatically supplied GitHub token. It waits for success, requests the public HTML page and `/api/health`, and verifies that the live `revision` matches `GITHUB_SHA`. The Actions summary records the application URL, source revision and Vercel deployment record.
+
+This setup uses native Git-based continuous deployment. **No Vercel token, Vercel organization/project secrets, manual application upload or manual redeploy is required for normal releases.** Supabase credentials remain only in the configured Vercel runtime settings and the private local setup file. Routine deployments never seed or reset the database.
+
+The end-to-end source-push test passed in [run 40463563344](https://github.com/jc-rcc/jc-APS/actions/runs/40463563344). The previous token-based CLI job has been replaced; its older failed runs remain historical records.
 
 ## 4. One-time setup
 
@@ -79,13 +91,13 @@ Production jobs are serialized. Require `checks` through branch protection befor
 5. If TLS needs a root certificate, download it from Supabase's database settings and set `DATABASE_CA_CERT` to the PEM content. Certificate verification remains enabled; do not bypass it.
 6. In `rcc-aps`, run `npm ci`, then `npm run db:bootstrap-demo`. The script loads local `.env`, applies the schema, seeds an empty assignment database, and assigns bcrypt passwords to `admin@rcc.edu.ph`, `finance@rcc.edu.ph`, `employee@rcc.edu.ph`. Give demo credentials privately to the evaluator. Checked-in seed passwords are blank and cannot sign in before provisioning. Re-running bootstrap intentionally resets those demo passwords; it is not a routine deployment step.
 
-### B. New Vercel project
+### B. Vercel Git integration
 
-1. Create a separate JC-APS Vercel project; never reuse the original project's deployment settings. Set Root Directory to `rcc-aps`, framework preset Other, and Node.js 22. Keep automatic Git deployment disabled; the Actions workflow performs the release.
-2. Add **Production** environment variables: `DATABASE_URL`, `JWT_SECRET`, and `DATABASE_CA_CERT` if required. Do not add the demo setup/password variables to the runtime project. No `DB_HOST`, `DB_NAME`, `TIDB_ENABLE_SSL`, Supabase anon key or service-role API key is needed.
-3. Leave `HRIS_API_URL` and `HRIS_API_KEY` unset to use bundled mock HRIS data. Optional Google SSO remains disabled unless a separate OAuth client and authorized origin are configured. The current in-memory nonce store needs shared storage before reliable Google SSO across multiple function instances; password login is the required demo path.
-4. In GitHub environment **production**, save `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` from the new Vercel account/project. Store credentials only in the appropriate secrets/settings.
-5. Push/merge to `main`; Actions builds and deploys. Make the grading URL accessible without Vercel access protection, while keeping application authentication active. Verify the result before recording its URL below.
+1. Use the separate `jc-aps` Vercel project connected to **`jc-rcc/jc-APS`**, with production branch `main`, Root Directory `rcc-aps`, framework Other and Node.js 22. Keep automatic Git deployments enabled.
+2. Add Production variables `DATABASE_URL`, `JWT_SECRET` and `DATABASE_CA_CERT` as required by the verified database TLS connection. Copy values without surrounding quotation marks. Do not add demo setup/password variables to runtime settings. Supabase API keys are not required by this direct SQL architecture.
+3. The Node builder runs `vercel-build` automatically. Test sources remain available during the build, while only required runtime files are traced into the Express function. Private `.env` files are excluded from version control and deployment uploads.
+4. Leave HRIS integration variables unset for mock data. Optional Google SSO remains disabled unless separately configured. Its current in-memory nonce store needs shared storage before reliable multi-instance Google SSO; password login is the verified demonstration path.
+5. Push or merge an app change to `main`. Watch Actions and the Vercel check complete automatically. The production verification job confirms both HTTP availability and the exact deployed revision.
 
 ## 5. Validation and recovery
 
@@ -103,12 +115,13 @@ Production jobs are serialized. Require `checks` through branch protection befor
 | New live application | https://jc-aps.vercel.app |
 | CI/CD configuration | https://github.com/jc-rcc/jc-APS/blob/main/.github/workflows/deploy.yml |
 | Architecture document | https://github.com/jc-rcc/jc-APS/blob/main/DEPLOYMENT.md |
-| CI evidence | https://github.com/jc-rcc/jc-APS/actions/runs/40454275443 — checks passed; deploy blocked by missing credentials |
-| Successful automated release evidence | **Pending GitHub Vercel secrets and a successful production deployment run** |
+| Successful CI and automated release evidence | https://github.com/jc-rcc/jc-APS/actions/runs/40463563344 |
+| Public API health and source revision | https://jc-aps.vercel.app/api/health |
 
 ## References
 
-- [Vercel: GitHub Actions deployment](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel)
+- [Vercel: Git deployments](https://vercel.com/docs/git)
+- [Vercel: Builds](https://vercel.com/docs/builds)
 - [Vercel: Function limits](https://vercel.com/docs/functions/limitations)
 - [Supabase: PostgreSQL connections and poolers](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [Supabase: Serverless database drivers](https://supabase.com/docs/guides/database/connecting-to-postgres/serverless-drivers)
