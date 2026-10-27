@@ -1,87 +1,107 @@
-# JC-APS Deployment Strategy
+# JC-APS Deployment Strategy: Vercel + Supabase
 
-## Scope and status
+## Scope and deployment status
 
-JC-APS is an independent academic deployment of the RCC payroll application. Its only deployment repository is **https://github.com/jc-rcc/jc-APS**. The original `jc-rcc/rcc-aps` repository, hosting project and database are outside this assignment's scope.
+JC-APS is an independent academic copy of the RCC Automated Payroll System, deployed only from **https://github.com/jc-rcc/jc-APS**. The original `jc-rcc/rcc-aps` checkout, hosting project and MySQL database are not changed or reused.
 
-**Status: source and pipeline prepared; new hosting/database provisioning and live verification pending.** An older project's URL is not evidence of this deployment.
+The assignment Supabase project **`jc-aps`** has been created in **Tokyo (`ap-northeast-1`)**. Application/database connection, demo provisioning and live Vercel verification are still pending. No older deployment URL should be submitted as the new application's URL.
 
-## Chosen infrastructure and architecture
+## 1. Architecture and infrastructure choice
 
-The frontend is vanilla HTML/CSS/JavaScript under `rcc-aps/public`, calling same-origin `/api/*` endpoints. The backend is Express on Node.js 22, exported by `rcc-aps/api/index.js`. It uses JWT/bcrypt authentication, optional school-domain Google sign-in, and `mysql2/promise` for persistent SQL state.
+The frontend is vanilla HTML/CSS/JavaScript in `rcc-aps/public`. It calls same-origin Express endpoints under `/api/*`. The backend runs on Node.js 22 and is exported as a Vercel handler by `rcc-aps/api/index.js`. The current catch-all Vercel routing sends both API and static file requests through Express; it does not separately publish static files to a CDN-only route.
 
-**Application: a new Vercel project.** This reuses the existing Node serverless adapter and provides HTTPS, environment configuration and automated deployment. With the current `vercel.json`, all requests, including static files, pass through Express. This version does not claim separate CDN-only routing for static files.
+**Vercel hosts the application and Express API.** The existing handler makes this a small hosting change. Managed HTTPS, deployment versions and environment configuration reduce server administration for the class demonstration.
 
-**Database: a separate TiDB Cloud Starter instance in MySQL-compatible mode, using database `jc_aps_demo`.** Set `TIDB_ENABLE_SSL=true`. Do not reuse the original project's database credentials. MySQL compatibility must be checked against the actual cloud tier: schema migrations, transactions, and advisory locks (`GET_LOCK`/`RELEASE_LOCK`) are release acceptance criteria. If the chosen tier cannot support them, use managed MySQL 8 rather than disabling concurrency protection.
+**Supabase hosts a separate PostgreSQL database.** The application uses the `pg` driver and Supabase's **Transaction pooler** connection from Dashboard → Connect. Supabase is used as a SQL database; existing Express JWT authentication, bcrypt passwords and role checks are retained. Supabase Auth, public API keys and a browser-side database client are not required.
 
 ```text
-Browser --HTTPS--> Vercel / Express --TLS--> assignment SQL database
-GitHub main --> install + syntax + smoke + MySQL tests --> build --> deploy
+Browser -- HTTPS --> Vercel Express API -- verified TLS --> Supabase pooler
+                                                       --> PostgreSQL jc_aps schema
+GitHub main --> npm ci --> syntax/smoke/PostgreSQL tests --> build --> deploy
 ```
+
+### Changes required by PostgreSQL
+
+This is a real database migration, not just a credential change. The SQL schema uses PostgreSQL identity columns, quoted application field names, unique indexes and foreign keys. SQL statements use PostgreSQL placeholders and `ON CONFLICT`. Null-safe state updates use `IS NOT DISTINCT FROM`. Dates remain calendar strings and decimal fields retain the application's existing numeric conversions.
+
+Write operations use a **transaction-scoped advisory lock**. State revision checks, reads, writes and password/Google account updates share one checked-out PostgreSQL client until commit/rollback, including nested operations. This avoids session-lock assumptions that are invalid with transaction pooling. Read-only state snapshots use repeatable-read transactions. Queries do not use named prepared statements. The client pool is capped at three connections per warm function instance.
+
+Payroll tables live in the private **`jc_aps` schema**, with PUBLIC schema access revoked. Keep it outside Supabase's exposed Data API schemas. The API's database credential stays server-side; payroll and authentication tables must never be exposed to anonymous browser clients. Use a dedicated, least-privilege runtime database role before extending the demo to broader institutional use.
 
 ### Cost, scaling and limitations
 
-This is a small, non-commercial class demonstration with intermittent traffic. Vercel Hobby and TiDB Starter allowances are the target cost strategy, subject to current eligibility and quotas; free operation is not guaranteed for every usage level. Check current plan dashboards before provisioning. Do not automatically upgrade to paid plans. If paid usage is approved, enable spending limits/billing alerts and remove assignment resources after grading when no longer needed.
+Vercel Hobby and Supabase Free are the intended starting plans for this small non-commercial class demo, subject to current eligibility, usage quotas and availability. No paid upgrade is required by this source configuration. Review the actual dashboards before enabling paid resources; configure billing alerts/spending controls if a paid plan is approved. Remove assignment resources after grading when no longer needed.
 
-Vercel scales request execution without maintaining a VM. The database pool permits five connections per warm function instance, so multiple instances increase aggregate connections. The database has separate capacity and request limits. Broad state reads, serialized writes and database-stored profile photos limit throughput. Higher load would require pagination, narrower transactions, external object storage and measured capacity planning.
+Vercel can scale function execution without a maintained VM, but database connections, storage, compute, function duration and request payload limits remain constraints. Each additional function instance adds its own small pool. Free database projects can become unavailable or paused under their current inactivity/resource policies; verify the project before grading.
 
-Functions have finite duration and payload limits. Consult current plan limits rather than an old fixed timeout. The application's 10 MB JSON limit does not override a smaller hosting limit. Local serverless files are not durable storage. A stable `JWT_SECRET` is mandatory; long-running jobs need another execution model. Cloud/internet outages and quota exhaustion affect availability. This academic demo does not establish suitability for institutional production payroll.
+The app reads broad state snapshots, serializes writes and stores profile photos in SQL. These choices are reasonable for a class demo but constrain throughput. Growth would require paginated endpoints, narrower transactions, object storage and measured capacity planning. Vercel's inbound payload limit takes precedence over Express's 10 MB JSON limit. Local serverless files are not durable storage, and long-running work needs a separate worker. Internet/cloud outages affect availability. A successful demo does not establish that the deployment meets institutional payroll operation requirements.
 
-## Alternatives evaluated
+## 2. Alternatives and trade-offs
 
-| Alternative | Reason not selected for this demo |
+| Alternative | Why it was not selected |
 | --- | --- |
-| Netlify | A viable PaaS, but requires adapting the existing Express function/routing to its runtime. Vercel already has an adapter in this project. |
-| Cloudflare Pages/Workers | Attractive for static/edge work. Conventional Node dependencies, TCP MySQL and SQL behavior require compatibility work. The app has no measured need for edge execution. |
-| Docker + AWS ECS + managed MySQL | Useful for persistent processes, custom system dependencies or workers. This single Node application needs none of those yet; image registry, IAM, networking, monitoring and provisioned capacity add cost and operational effort. |
-| Local/on-premise | Appropriate for some private institutional tools, but public class access requires managed HTTPS, networking, uptime and maintenance. A developer laptop alone is not a dependable live submission. |
+| Netlify PaaS | Viable, but adapting the existing Express/Vercel routing would add work without a demonstrated benefit for this project. |
+| Cloudflare Pages/Workers | Useful for static and edge workloads. The application expects conventional Node modules and SQL transactions; adapting to Workers/database connectivity adds compatibility work without a measured edge requirement. |
+| Docker + AWS ECS + managed PostgreSQL | Suitable for persistent services, background workers or custom system dependencies. This single Node application has no such requirement; registry, IAM, networking, monitoring and provisioned capacity add operations and cost complexity. |
+| Local/on-premise | Can suit private institutional tools. Public class access would require dependable uptime, TLS, networking and maintenance. A developer laptop alone is not a dependable live submission. |
+| Vercel + managed MySQL/TiDB | Preserves the original SQL dialect, but the chosen assignment stack is Supabase. PostgreSQL conversion costs extra implementation effort, accepted in exchange for one managed database dashboard and its pooling tools. |
 
-## CI/CD pipeline
+## 3. Automated CI/CD
 
-Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It runs on pull requests to `main` and pushes to `main`, including merges.
+Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It runs on pull requests targeting `main` and pushes/merges to `main`.
 
-1. Check out code and install Node.js 22.
-2. Install locked application dependencies with `npm ci`.
-3. Run `npm run lint` (JavaScript syntax checks) and `npm test` (existing smoke tests and HTTP checks of the serverless handler, UI assets, API health and protected routes).
-4. Run schema/data-persistence and Google authentication integration tests against a disposable MySQL 8 service. Tests create/drop isolated databases; cloud credentials never enter this checks job.
-5. Start deployment only after `checks` succeeds, only for pushes to `jc-rcc/jc-APS:main`. PRs never receive deployment secrets or deploy production.
-6. Install the Vercel CLI from `deployment/package-lock.json`, pull production project configuration, build using `vercel build --prod`, and publish the artifact with `vercel deploy --prebuilt --prod`. No manual application uploads are used.
-7. Put the deployment URL in the Actions summary and verify public HTML plus `/api/health`. Failure marks the run failed, but does not automatically roll back a release already published. The health probe does not validate SQL connectivity or successful login.
+1. Check out source and install Node.js 22.
+2. Run `npm ci` against the application lockfile.
+3. Run JavaScript syntax checks and smoke tests, including real HTTP checks for the serverless entry, frontend assets, health response and protected API routes.
+4. Test schema setup/repeated setup, stable row IDs, rollback, foreign keys, unique payroll periods, half-day leave, data persistence, role restrictions, concurrent-save conflicts and Google authentication against a disposable PostgreSQL 16 service. Integration tests create/drop isolated local test databases and refuse remote/cloud test servers.
+5. After `checks` succeeds, deploy only on a push to **`jc-rcc/jc-APS:main`**. PRs never deploy production or receive deployment secrets.
+6. Install the locked Vercel CLI, pull production configuration, run `vercel build --prod`, then `vercel deploy --prebuilt --prod`. Application deployment is automated; there are no manual file uploads.
+7. Record the deployment URL in the Actions summary and check public HTML and `/api/health`. That probe checks application/API availability, not SQL connectivity or role-based workflows. Failure marks the run failed but does not automatically undo a published release.
 
-Production jobs are serialized. Configure branch protection to require `checks` and block force pushes. Avoid required human approval on the GitHub `production` environment if fully automatic deployment is required. Disable separate Vercel automatic Git deployments so they cannot bypass the CI gate.
+Production jobs are serialized. Require `checks` through branch protection before merging. Leave automatic Vercel Git deployment disconnected/disabled to prevent bypassing the test gate. Do not add required human approval on the GitHub `production` environment if the course requires fully automatic CD. One-time database provisioning is separate from application release; routine deployment never reseeds payroll data.
 
-## One-time setup
+## 4. One-time setup
 
-1. Publish this independent source to `jc-rcc/jc-APS`. Never push from or repoint the original checkout.
-2. Create the new database and a new Vercel project (for example `jc-aps`). Set Vercel Root Directory to `rcc-aps`, framework preset Other, and Node.js 22. Use the existing `vercel.json`. Leave automatic Git deployments disconnected/disabled; GitHub Actions owns application deployment.
-3. Set these Vercel **Production** variables: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME=jc_aps_demo`, `TIDB_ENABLE_SSL=true`, and a long random `JWT_SECRET`. Keep values out of source and chat. Leave `HRIS_API_URL`/`HRIS_API_KEY` unset for mock HRIS data. Leave `GOOGLE_CLIENT_ID` unset unless a separate OAuth client and authorized origin have been configured for the assignment.
-4. Initialize the new database from a trusted environment before public deployment: set those database/auth variables and separate `DEMO_ADMIN_PASSWORD`, `DEMO_FINANCE_PASSWORD`, `DEMO_EMPLOYEE_PASSWORD` values, each at least 16 characters. In `rcc-aps`, run `npm ci` then `npm run db:bootstrap-demo`. This applies schema/upgrades and sets bcrypt passwords. This is database provisioning, not manual application deployment. Never run against the institution's database. Routine deployment does not run schema/seed scripts.
-5. The copied seed uses demo names, no profile/payroll/attendance data, and blank passwords that cannot log in until bootstrap assigns them. No original SQL dump is included. Supply the demo admin, finance and employee credentials privately to the evaluator; review mock records before demonstration.
-6. Create GitHub environment `production`. Add its secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` from the new Vercel project/account. Database passwords remain in Vercel and the trusted bootstrap environment. Do not commit tokens or `.vercel` metadata.
-7. Push/merge to `main`; CI performs application build and deployment. Ensure the grading URL is publicly reachable without Vercel access protection, while application authentication protects payroll endpoints.
+### A. Supabase and demo database
 
-## Verification and rollback
+1. Use the new `jc-aps` project. Its region is Tokyo; use only synthetic assignment data.
+2. The schema is [`rcc-aps/server/db/sql/postgres.sql`](rcc-aps/server/db/sql/postgres.sql). It can be run in the new project's SQL Editor. Do not import the old MySQL dump. Creating tables alone does not create working demo logins.
+3. In Supabase Dashboard → **Connect → Transaction pooler**, obtain the connection URI. Keep the password private and percent-encode special characters when inserting it in a URI. The expected database name is `postgres`, as supplied by Supabase; the application tables are inside schema `jc_aps`.
+4. Copy `rcc-aps/.env.example` to local `rcc-aps/.env` in the **independent JC-APS checkout**. Set `DATABASE_URL`, a long random `JWT_SECRET`, `DEMO_SETUP_CONFIRM=jc-aps`, and three different strong values for `DEMO_ADMIN_PASSWORD`, `DEMO_FINANCE_PASSWORD`, `DEMO_EMPLOYEE_PASSWORD` (at least 16 characters). Never commit or share `.env`.
+5. If TLS needs a root certificate, download it from Supabase's database settings and set `DATABASE_CA_CERT` to the PEM content. Certificate verification remains enabled; do not bypass it.
+6. In `rcc-aps`, run `npm ci`, then `npm run db:bootstrap-demo`. The script loads local `.env`, applies the schema, seeds an empty assignment database, and assigns bcrypt passwords to `admin@rcc.edu.ph`, `finance@rcc.edu.ph`, `employee@rcc.edu.ph`. Give demo credentials privately to the evaluator. Checked-in seed passwords are blank and cannot sign in before provisioning. Re-running bootstrap intentionally resets those demo passwords; it is not a routine deployment step.
 
-- Retain the successful Actions run URL and verify the Vercel production build completed.
-- Open the new URL while signed out; verify page, CSS, JavaScript and logos.
-- Log in with each demo role. Check access restrictions, profile changes, teaching load, a small payroll calculation, report export and persistence after refresh.
-- As admin/finance, verify `/api/db/status` reports `connected: true`. Check writes and concurrent updates against the actual cloud database. The disposable CI MySQL tests do not prove TiDB behavior.
-- Verify that original infrastructure remains untouched and no old deployment URL is submitted.
-- For a bad release, revert through GitHub and let CI redeploy; Vercel's previous known-good deployment is an immediate recovery option. Database schema/data need a separate backup and restore plan; code rollback does not restore them.
+### B. New Vercel project
 
-## Course submission
+1. Create a separate JC-APS Vercel project; never reuse the original project's deployment settings. Set Root Directory to `rcc-aps`, framework preset Other, and Node.js 22. Keep automatic Git deployment disabled; the Actions workflow performs the release.
+2. Add **Production** environment variables: `DATABASE_URL`, `JWT_SECRET`, and `DATABASE_CA_CERT` if required. Do not add the demo setup/password variables to the runtime project. No `DB_HOST`, `DB_NAME`, `TIDB_ENABLE_SSL`, Supabase anon key or service-role API key is needed.
+3. Leave `HRIS_API_URL` and `HRIS_API_KEY` unset to use bundled mock HRIS data. Optional Google SSO remains disabled unless a separate OAuth client and authorized origin are configured. The current in-memory nonce store needs shared storage before reliable Google SSO across multiple function instances; password login is the required demo path.
+4. In GitHub environment **production**, save `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` from the new Vercel account/project. Store credentials only in the appropriate secrets/settings.
+5. Push/merge to `main`; Actions builds and deploys. Make the grading URL accessible without Vercel access protection, while keeping application authentication active. Verify the result before recording its URL below.
+
+## 5. Validation and recovery
+
+- Retain a successful Actions run and Vercel release URL as evidence.
+- Open the new URL while signed out; verify HTML, CSS, JavaScript and logos.
+- Sign in as demo admin, finance and employee. Verify restricted access, profile changes, a small teaching load/payroll example, exports and persistence after refresh.
+- As admin/finance, confirm `/api/db/status` reports PostgreSQL with `connected: true`. Exercise saves and concurrent edits against the real Supabase database. CI's disposable PostgreSQL service does not prove that cloud credentials/TLS/pooling are configured correctly.
+- Keep the original project untouched and never substitute its live URL for JC-APS.
+- For bad code releases, revert through GitHub and let CI redeploy, or restore a known-good Vercel deployment. Code rollback does not restore schema/data. Keep a separate tested database backup/restore process; for example use PostgreSQL `pg_dump`/`pg_restore` with the session/direct connection and the private `jc_aps` schema, or an available Supabase backup facility. Confirm the account's backup features and retention before relying on them.
+
+## 6. Course submission
 
 | Deliverable | Link/status |
 | --- | --- |
-| New live application | **Pending provisioning, deployment and functional verification** |
+| New live application | **Pending Vercel configuration, database provisioning and live functional verification** |
 | CI/CD configuration | https://github.com/jc-rcc/jc-APS/blob/main/.github/workflows/deploy.yml |
 | Architecture document | https://github.com/jc-rcc/jc-APS/blob/main/DEPLOYMENT.md |
-| Successful workflow evidence | Add Actions run URL after successful deployment |
+| Successful release evidence | Add the successful Actions run URL after deployment |
 
 ## References
 
-- [Vercel: GitHub Actions](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel)
+- [Vercel: GitHub Actions deployment](https://vercel.com/kb/guide/how-can-i-use-github-actions-with-vercel)
 - [Vercel: Function limits](https://vercel.com/docs/functions/limitations)
-- [Vercel: Hobby plan](https://vercel.com/docs/plans/hobby)
-- [TiDB Cloud: Starter limitations](https://docs.pingcap.com/tidbcloud/serverless-limitations/)
-- [TiDB: MySQL compatibility](https://docs.pingcap.com/tidb/stable/mysql-compatibility/)
+- [Supabase: PostgreSQL connections and poolers](https://supabase.com/docs/guides/database/connecting-to-postgres)
+- [Supabase: Serverless database drivers](https://supabase.com/docs/guides/database/connecting-to-postgres/serverless-drivers)
+- [Supabase: Prepared statements and transaction pooling](https://supabase.com/kb/troubleshooting/disabling-prepared-statements-qL8lEL)
+- [node-postgres: SSL](https://node-postgres.com/features/ssl)

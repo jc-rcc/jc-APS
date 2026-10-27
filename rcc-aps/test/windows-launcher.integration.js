@@ -21,12 +21,12 @@ function readRecord(){return JSON.parse(fs.readFileSync(recordFile,'utf8').repla
 async function waitFor(predicate){for(let i=0;i<600;i++){if(await predicate())return;await delay(100);}throw Error('Launcher timeout. '+output);}
 function alive(pid){try{process.kill(pid,0);return true;}catch{return false;}}
 (async()=>{
- for(const folder of ['server','tmp','node_modules/mysql2'])fs.mkdirSync(path.join(root,folder),{recursive:true});
- fs.writeFileSync(path.join(root,'package.json'),JSON.stringify({dependencies:{mysql2:'test'}}));
+ for(const folder of ['server/db','tmp','node_modules/pg'])fs.mkdirSync(path.join(root,folder),{recursive:true});
+ fs.writeFileSync(path.join(root,'package.json'),JSON.stringify({dependencies:{pg:'test'}}));
  const lock='test-lock';fs.writeFileSync(path.join(root,'package-lock.json'),lock);
  fs.writeFileSync(path.join(root,'tmp/dependencies.sha256'),crypto.createHash('sha256').update(lock).digest('hex').toUpperCase());
- fs.writeFileSync(path.join(root,'node_modules/mysql2/index.js'),'module.exports={};');
- fs.writeFileSync(path.join(root,'node_modules/mysql2/promise.js'),"module.exports={createConnection:async()=>({end:async()=>{}})};");
+ fs.writeFileSync(path.join(root,'node_modules/pg/index.js'),'module.exports={};');
+ fs.writeFileSync(path.join(root,'server/db/postgres.js'),"module.exports={query:async()=>[[]],close:async()=>{}};");
  fs.writeFileSync(path.join(root,'server/server.js'),"require('http').createServer((req,res)=>res.end('fixture')).listen(Number(process.env.PORT));");
  const reservation=http.createServer();await new Promise(resolve=>reservation.listen(0,'127.0.0.1',resolve));
  const port=reservation.address().port;await new Promise(resolve=>reservation.close(resolve));
@@ -42,8 +42,8 @@ function alive(pid){try{process.kill(pid,0);return true;}catch{return false;}}
  await launcher.finished;assert.equal(fs.existsSync(recordFile),false);assert.equal(alive(record.pid),false);
  assert.equal((await run('Stop',port).finished).code,0,'Repeated shutdown is harmless');
  // Failed DB connection must stop startup and must not claim offline login works.
- fs.writeFileSync(path.join(root,'node_modules/mysql2/promise.js'),"module.exports={createConnection:async()=>{throw Error('fixture offline');}};");
- const offline=await run('Start',port).finished;assert.equal(offline.code,1);assert.match(offline.text,/Cannot connect to MySQL/);assert.equal(fs.existsSync(recordFile),false);
+ fs.writeFileSync(path.join(root,'server/db/postgres.js'),"module.exports={query:async()=>{throw Error('fixture offline');}};");
+ const offline=await run('Start',port).finished;assert.equal(offline.code,1);assert.match(offline.text,/Cannot connect to PostgreSQL/);assert.equal(fs.existsSync(recordFile),false);
  console.log('PASS: Windows start/stop with spaces in paths, dependency check, DB failure, duplicate port protection, process identity validation and repeated shutdown.');
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(()=>{
  // Retain the fixture for diagnostics. Cleanup only processes created by this test.

@@ -1,45 +1,17 @@
 'use strict';
 // Creates and drops its own isolated database; never mutates the application DB.
 const assert = require('assert/strict');
-const mysql = require('mysql2/promise');
-const originalDatabase = process.env.DB_NAME || 'rcc_aps';
-const testDatabase = 'rcc_aps_validation_' + Date.now();
-process.env.DB_NAME = testDatabase;
-const connectionOptions = {host:process.env.DB_HOST || 'localhost', user:process.env.DB_USER || 'root', password:process.env.DB_PASSWORD || '', dateStrings:true};
+const { createFixture } = require('./postgres-fixture');
 let root, server;
 async function run() {
-  assert.notEqual(testDatabase,originalDatabase);
-  root = await mysql.createConnection(connectionOptions);
-  let legacyPayroll;
-  if (process.env.UPGRADE_BACKUP_FIXTURE) {
-    const snapshot = JSON.parse(require('zlib').gunzipSync(require('fs').readFileSync(process.env.UPGRADE_BACKUP_FIXTURE)));
-    await root.query('CREATE DATABASE `' + testDatabase + '` CHARACTER SET utf8mb4');
-    await root.query('USE `' + testDatabase + '`');
-    await root.query('SET FOREIGN_KEY_CHECKS=0');
-    for (const [name,table] of Object.entries(snapshot.tables)) {
-      if (!/^\w+$/.test(name)) throw Error('Invalid backup table name');
-      await root.query(table.ddl);
-      for (const row of table.records) {
-        const columns = Object.keys(row);
-        await root.query('INSERT INTO `' + name + '` (' + columns.map(col=>'`'+col+'`').join(',') + ') VALUES (' + columns.map(()=>'?').join(',') + ')',columns.map(col=>row[col]));
-      }
-    }
-    await root.query('SET FOREIGN_KEY_CHECKS=1');
-    [legacyPayroll] = await root.query('SELECT id,empId,gross,net FROM payroll_records ORDER BY id');
-  }
+  root = await createFixture('state');
   await require('../server/db/init').init();
-  if (legacyPayroll) {
-    const [upgradedPayroll] = await root.query('SELECT id,empId,gross,net FROM payroll_records ORDER BY id');
-    assert.deepEqual(upgradedPayroll,legacyPayroll,'Migration must preserve all existing payroll IDs and amounts');
-    console.log('PASS: legacy backup migration preserves payroll records and amounts.');
-  }
   const db = require('../server/db');
-  assert.equal((await db.status()).connected,true,'Startup health check must support DATE-string connections');
-  if (legacyPayroll) {
-    await db.persistState(await db.assembleState());
-    const [roundTripPayroll] = await root.query('SELECT id,empId,gross,net FROM payroll_records ORDER BY id');
-    assert.deepEqual(roundTripPayroll,legacyPayroll,'Full legacy-state round-trip must preserve payroll');
-  }
+  assert.equal((await db.status()).connected, true);
+  const [schema] = await root.query("SELECT nspname FROM pg_namespace WHERE nspname='jc_aps'");
+  assert.equal(schema.length, 1);
+  const [access] = await root.query("SELECT COUNT(*)::integer AS grants FROM pg_namespace, LATERAL aclexplode(COALESCE(nspacl, acldefault('n', nspowner))) AS acl WHERE nspname='jc_aps' AND acl.grantee=0 AND acl.privilege_type='USAGE'");
+  assert.equal(access[0].grants, 0, 'Payroll schema must not grant PUBLIC access');
   const password = 'test-only-secure-password';
   const hash = await require('bcryptjs').hash(password,10);
   const users = ['admin','finance','employee'].map((role,index) => ({id:index+1,first:role,last:'Test',email:role+'@rcc.edu.ph',role:['System Admin','Finance Officer','Employee'][index],status:'Active',classification:index===2?'Teaching':'Non-Teaching',schoolLevel:index===2?'College':'',department:'CCS',salary:20000,hourlyRate:index===2?190:0,rankId:index===2?3:0,hireDate:'2025-06-01',date:'Oct 20, 2026'}));
@@ -53,15 +25,19 @@ async function run() {
   assert.equal(state.payrollRecords[0].salaryBase,20000);
   assert.equal(state.payrollRecords[0].bonuses.length,6);
   assert.equal(state.profiles[3].photo,'data:image/jpeg;base64,AQID');
-  const [idsBefore] = await root.query('SELECT id FROM `' + testDatabase + '`.payroll_records');
+  const [idsBefore] = await root.query('SELECT id FROM payroll_records');
   await db.persistState(state);
-  const [idsAfter] = await root.query('SELECT id FROM `' + testDatabase + '`.payroll_records');
+  const [idsAfter] = await root.query('SELECT id FROM payroll_records');
   assert.deepEqual(idsBefore,idsAfter,'Unchanged payroll IDs must remain stable');
-  // Foreign keys and unique payroll periods are enforced in MySQL itself.
-  await assert.rejects(root.query('INSERT INTO `' + testDatabase + '`.payroll_records (empId,year,month) VALUES (3,2026,10)'),error=>error.code==='ER_DUP_ENTRY');
-  await assert.rejects(root.query('INSERT INTO `' + testDatabase + '`.profiles (id) VALUES (999)'),error=>error.code==='ER_NO_REFERENCED_ROW_2');
-  await assert.rejects(root.query('DELETE FROM `' + testDatabase + '`.users WHERE id=3'),error=>error.code==='ER_ROW_IS_REFERENCED_2');
-  // Validate real HTTP authorization and data scoping with real MySQL storage.
+  await assert.rejects(db.persistState({...state, profiles:{9999:{empPhone:'invalid reference'}}}), error=>error.code==='23503');
+  assert.deepEqual(await db.assembleState(), state, 'A failed write rolls the whole state back');
+  await require('../server/db/init').init();
+  assert.deepEqual((await db.assembleState()).payrollRecords, state.payrollRecords, 'Repeated setup preserves payroll');
+  // Foreign keys and unique payroll periods are enforced in PostgreSQL.
+  await assert.rejects(root.query('INSERT INTO payroll_records ("empId",year,month) VALUES (3,2026,10)'),error=>error.code==='23505');
+  await assert.rejects(root.query('INSERT INTO profiles (id) VALUES (999)'),error=>error.code==='23503');
+  await assert.rejects(root.query('DELETE FROM users WHERE id=3'),error=>error.code==='23503');
+  // Validate real HTTP authorization and data scoping with real PostgreSQL storage.
   server = require('../server/server').app.listen(0,'127.0.0.1');
   await new Promise(resolve=>server.once('listening',resolve));
   const base = 'http://127.0.0.1:' + server.address().port;
@@ -126,13 +102,10 @@ async function run() {
       require('../server/server').app.post('/__validation/finish',(req,res)=>{res.json({ok:true});resolve();});
     });
   }
-  console.log('PASS: isolated MySQL migration, stable row IDs, half-day leave, payroll snapshots, photo round-trip, foreign keys, unique periods, role restrictions, password handling and concurrent-save conflicts.');
+  console.log('PASS: isolated PostgreSQL setup, stable row IDs, half-day leave, payroll snapshots, photo round-trip, foreign keys, unique periods, role restrictions, password handling and concurrent-save conflicts.');
 }
 run().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{
   if(server)await new Promise(resolve=>server.close(resolve));
-  if(root){
-    if(!/^rcc_aps_validation_\d+$/.test(testDatabase) || testDatabase===originalDatabase)throw Error('Unsafe test cleanup target');
-    await root.query('DROP DATABASE IF EXISTS `' + testDatabase + '`');await root.end();
-  }
+  if(root) await root.cleanup();
   process.exit(process.exitCode || 0);
 });

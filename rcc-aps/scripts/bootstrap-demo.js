@@ -1,12 +1,12 @@
 'use strict';
 // Run once against the NEW assignment database, before deploying publicly.
 async function main() {
-  if (!process.env.DB_NAME || process.env.DB_NAME === 'rcc_aps') {
-    throw new Error('Set a separate assignment DB_NAME, such as jc_aps_demo.');
+  if (process.env.DEMO_SETUP_CONFIRM !== 'jc-aps') {
+    throw new Error('Set DEMO_SETUP_CONFIRM=jc-aps only for the new assignment Supabase project.');
   }
   const names = ['DEMO_ADMIN_PASSWORD', 'DEMO_FINANCE_PASSWORD', 'DEMO_EMPLOYEE_PASSWORD'];
   for (const name of names) {
-    if (!process.env[name] || process.env[name].trim().length < 16) {
+    if (!process.env[name] || process.env[name].includes('REPLACE_WITH') || process.env[name].trim().length < 16) {
       throw new Error(`${name} must contain at least 16 non-padding characters.`);
     }
   }

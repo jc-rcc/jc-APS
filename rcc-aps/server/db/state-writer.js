@@ -37,13 +37,12 @@ function incrementalConnection(connection) {
   };
   const load = async table => {
     if (!snapshots.has(table)) {
-      const [rows] = await connection.query('SELECT * FROM `' + table + '` FOR UPDATE');
+      const [rows] = await connection.query('SELECT * FROM "' + table + '" FOR UPDATE');
       snapshots.set(table, { rows, seen: new Set() });
     }
     return snapshots.get(table);
   };
   return {
-    beginTransaction: () => connection.beginTransaction(), rollback: () => connection.rollback(), release: () => connection.release(),
     async query(sql, params = []) {
       const match = sql.match(/INSERT INTO\s+(\w+)\s*\(([^)]+)\)\s*VALUES\s*\(([^)]+)\)/i);
       if (!match) throw new Error('Unexpected statement in state writer');
@@ -61,22 +60,22 @@ function incrementalConnection(connection) {
       if (snapshot.seen.has(key)) throw new Error('Duplicate submitted record in ' + table);
       snapshot.seen.add(key);
       const existing = snapshot.rows.find(record => keyFor(table, record) === key);
-      const quoted = name => '`' + name + '`';
-      if (!existing) return connection.query('INSERT INTO ' + quoted(table) + ' (' + columns.map(quoted).join(',') + ') VALUES (' + columns.map(() => '?').join(',') + ')', columns.map(col => row[col]));
+      const quoted = name => '"' + name + '"';
+      if (!existing) return connection.query('INSERT INTO ' + quoted(table) + ' (' + columns.map(quoted).join(',') + ') VALUES (' + columns.map((_, i) => '$' + (i + 1)).join(',') + ')', columns.map(col => row[col]));
       const changed = columns.filter(col => !identities[table].includes(col) && !equal(row[col],existing[col]));
       if (!changed.length) return [{ affectedRows: 0 }];
-      const where = identities[table].map(col => quoted(col) + ' <=> ?').join(' AND ');
-      return connection.query('UPDATE ' + quoted(table) + ' SET ' + changed.map(col => quoted(col) + '=?').join(',') + ' WHERE ' + where, [...changed.map(col => row[col]), ...identities[table].map(col => existing[col])]);
+      const where = identities[table].map((col, i) => quoted(col) + ' IS NOT DISTINCT FROM $' + (changed.length + i + 1)).join(' AND ');
+      return connection.query('UPDATE ' + quoted(table) + ' SET ' + changed.map((col, i) => quoted(col) + '=$' + (i + 1)).join(',') + ' WHERE ' + where, [...changed.map(col => row[col]), ...identities[table].map(col => existing[col])]);
     },
-    async commit() {
+    async flush() {
       for (const table of deleteOrder) {
         const snapshot = await load(table);
         for (const row of snapshot.rows) if (!snapshot.seen.has(keyFor(table, row))) {
-          const where = identities[table].map(col => '`' + col + '` <=> ?').join(' AND ');
-          await connection.query('DELETE FROM `' + table + '` WHERE ' + where, identities[table].map(col => row[col]));
+          const where = identities[table].map((col, i) => '"' + col + '" IS NOT DISTINCT FROM $' + (i + 1)).join(' AND ');
+          await connection.query('DELETE FROM "' + table + '" WHERE ' + where, identities[table].map(col => row[col]));
         }
       }
-      return connection.commit();
+      // The outer PostgreSQL transaction owns COMMIT/ROLLBACK and the write lock.
     }
   };
 }

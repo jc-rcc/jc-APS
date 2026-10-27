@@ -1,0 +1,18 @@
+'use strict';
+const assert = require('node:assert/strict');
+const { configuration } = require('../server/db/postgres');
+delete process.env.DATABASE_URL;
+assert.throws(configuration, /DATABASE_URL/);
+process.env.DATABASE_URL = 'mysql://example.invalid/demo';
+assert.throws(configuration, /PostgreSQL/);
+process.env.DATABASE_URL = 'postgresql://demo:fake@pooler.example.invalid:6543/postgres?sslmode=no-verify';
+const remote = configuration();
+assert.equal(remote.ssl.rejectUnauthorized, true, 'A URL cannot silently disable TLS verification');
+assert.equal(new URL(remote.connectionString).searchParams.has('sslmode'), false);
+process.env.DATABASE_URL = 'postgresql://postgres:fake@127.0.0.1:5432/test';
+delete process.env.VERCEL;
+delete process.env.NODE_ENV;
+assert.equal(configuration().ssl, false);
+process.env.VERCEL = '1';
+assert.equal(configuration().ssl.rejectUnauthorized, true, 'Deployed functions require TLS');
+console.log('PASS: PostgreSQL configuration requires a URL and verifies TLS for cloud connections.');

@@ -39,7 +39,7 @@ try {
         }
         Remove-Item -LiteralPath $processFile
         Stop-Process -Id $serverProcess.Id -ErrorAction Stop
-        Write-Host '[OK] Stopped this RCC-APS server. MySQL and other apps remain running.'
+        Write-Host '[OK] Stopped this JC-APS server. Other apps remain running.'
         exit 0
     }
 
@@ -92,24 +92,24 @@ try { for (const name of Object.keys(require('./package.json').dependencies || {
         if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed. Check your internet connection and try again.' }
         Set-Content -LiteralPath $hashFile -Value $lockHash -Encoding ASCII
     }
-    Write-Host '[INFO] Checking MySQL using the app DB_HOST, DB_USER and DB_PASSWORD settings...'
+    Write-Host '[INFO] Checking PostgreSQL using DATABASE_URL from the environment or .env...'
     $databaseProbe = @'
-const mysql = require('mysql2/promise');
-mysql.createConnection({host:process.env.DB_HOST || 'localhost',user:process.env.DB_USER || 'root',password:process.env.DB_PASSWORD || '',connectTimeout:5000})
- .then(c => c.end())
- .catch(() => { console.error('[ERROR] Cannot connect to MySQL. Start MySQL in XAMPP and check DB_HOST, DB_USER and DB_PASSWORD.'); process.exit(1); });
+const db = require('./server/db/postgres');
+db.query('SELECT 1')
+ .then(() => db.close())
+ .catch(() => { console.error('[ERROR] Cannot connect to PostgreSQL. Check DATABASE_URL and the Supabase project status.'); process.exit(1); });
 '@
-    & $node -e $databaseProbe
-    if ($LASTEXITCODE -ne 0) { throw 'MySQL is required. The Payroll server was not started.' }
-    Write-Host '[OK] MySQL connected.'
+    & $node --env-file-if-exists=.env -e $databaseProbe
+    if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL is required. The Payroll server was not started.' }
+    Write-Host '[OK] PostgreSQL connected.'
     Write-Host '[INFO] Startup checks and schema updates will run automatically.'
     Write-Host '[INFO] Existing records are kept. A fresh empty database receives seed data.'
-    Write-Host '[INFO] To use the exported records on another PC, import rcc_aps.sql before starting.'
+    Write-Host '[INFO] Use only the separate assignment Supabase database; see DEPLOYMENT.md.'
     Write-Host ('Open http://localhost:' + $port + ' after the server reports it is ready.')
     Write-Host 'Use shutdown.bat or press Ctrl+C in this window to stop the server.'
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
     $startInfo.FileName = $node
-    $startInfo.Arguments = '"' + $entryPoint + '"'
+    $startInfo.Arguments = '--env-file-if-exists=.env "' + $entryPoint + '"'
     $startInfo.WorkingDirectory = $AppRoot
     $startInfo.UseShellExecute = $false
     $serverProcess = [Diagnostics.Process]::Start($startInfo)

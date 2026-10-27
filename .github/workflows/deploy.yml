@@ -14,21 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     services:
-      mysql:
-        image: mysql:8.0
+      postgres:
+        image: postgres:16
         env:
-          MYSQL_ROOT_PASSWORD: ci-only-password
-        ports: ['3306:3306']
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -pci-only-password"
+          --health-cmd="pg_isready -U postgres"
           --health-interval=10s --health-timeout=5s --health-retries=10
     defaults:
       run:
         working-directory: rcc-aps
     env:
-      DB_HOST: 127.0.0.1
-      DB_USER: root
-      DB_PASSWORD: ci-only-password
+      DATABASE_TEST_URL: postgresql://postgres:ci-only-password@127.0.0.1:5432/postgres
       JWT_SECRET: ci-only-secret-never-use-in-production
     steps:
       - uses: actions/checkout@v4
@@ -43,9 +42,9 @@ jobs:
         run: npm run lint
       - name: Run smoke and serverless HTTP tests
         run: npm test
-      - name: Test schema upgrades and data persistence against MySQL
+      - name: Test PostgreSQL setup, data persistence and concurrent saves
         run: node test/database-upgrade.integration.js
-      - name: Test Google authentication against isolated MySQL
+      - name: Test Google authentication against isolated PostgreSQL
         run: node test/google-sso.integration.js
 
   deploy:

@@ -7,11 +7,12 @@
     "node": "22.x"
   },
   "scripts": {
-    "start": "node server/server.js",
-    "dev": "node server/server.js",
+    "start": "node --env-file-if-exists=.env server/server.js",
+    "dev": "node --env-file-if-exists=.env server/server.js",
     "lint": "node scripts/checks.js lint",
     "test": "node scripts/checks.js test",
-    "db:bootstrap-demo": "node scripts/bootstrap-demo.js"
+    "db:bootstrap-demo": "node --env-file-if-exists=.env scripts/bootstrap-demo.js",
+    "test:integration": "node test/database-upgrade.integration.js && node test/google-sso.integration.js"
   },
   "keywords": [
     "payroll",
@@ -25,6 +26,6 @@
     "express": "^4.19.2",
     "google-auth-library": "^11.3.1",
     "jsonwebtoken": "^9.0.3",
-    "mysql2": "^3.24.3"
+    "pg": "8.23.1"
   }
 }

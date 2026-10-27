@@ -100,7 +100,7 @@ function periodHasData(empId, monthNum, year) {
 }
 
 // Adopt a full server snapshot (/api/data) into the shared in-memory state so the
-// current session reflects MySQL without needing a page reload. Only fields the
+// current session reflects PostgreSQL without needing a page reload. Only fields the
 // received payload actually carries are overwritten.
 function applyServerData(d) {
   if (!d) return;

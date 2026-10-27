@@ -32,7 +32,7 @@ assert.match(elements.calcCustomRow.innerHTML,/disabled/);
 assert.equal(vm.runInContext('activeCustomDeductions(20000).length',context),0);
 // Exercise server persistence using a mock connection, without touching live records.
 let savedPayroll;
-const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async()=>{},release(){},query:async(sql,params)=>{sql=sql.replaceAll('`','');
+const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async()=>{},release(){},query:async(sql,params)=>{sql=sql.replace(/["`]/g,'');
  if(/INSERT INTO payroll_records/.test(sql)) {
    const columns=sql.match(/payroll_records\s*\(([^)]+)\)/)[1].split(',').map(x=>x.trim());
    assert.equal(columns.length,params.length);
@@ -41,7 +41,7 @@ const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async
  return [[]];
 }};
 const pool={getConnection:async()=>connection,execute:async sql=>[[/FROM payroll_records/.test(sql)?savedPayroll:/FROM phil_data|FROM pag_data/.test(sql)?{}:null].filter(Boolean)]};
-const serverContext=vm.createContext({module:{exports:{}},require:name=>name==='mysql2/promise'?{createPool:()=>pool}:name==='./db/state-writer'?require('../server/db/state-writer'):{},process:{env:{}},console});
+const serverContext=vm.createContext({module:{exports:{}},require:name=>name==='./db/postgres'?{query:pool.execute,transaction:async work=>work(connection),readTransaction:async work=>work(connection)}:name==='./db/state-writer'?require('../server/db/state-writer'):{},process:{env:{}},console});
 vm.runInContext(fs.readFileSync(__dirname+'/../server/db.js','utf8'),serverContext);
 (async()=>{
  const customDeds=[{id:7,name:'PERAA',amount:400}];

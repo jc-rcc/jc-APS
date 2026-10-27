@@ -1,4 +1,4 @@
-// Validates the client-pushed demo state before it is persisted to MySQL.
+// Validates the client-pushed demo state before it is persisted to PostgreSQL.
 // The state must be an object containing the core arrays the app expects;
 // anything else is rejected with HTTP 400 so a bad client (or an accidental
 // empty POST) cannot wipe the database.

@@ -1,13 +1,10 @@
 'use strict';
-// Real HTTP, isolated MySQL and Google's real JWT verifier, using test-only RSA keys.
+// Real HTTP, isolated PostgreSQL and Google's real JWT verifier, using test-only RSA keys.
 const assert = require('assert/strict');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const mysql = require('mysql2/promise');
+const { createFixture } = require('./postgres-fixture');
 const { OAuth2Client } = require('google-auth-library');
-const database = 'rcc_aps_sso_validation_' + Date.now();
-const originalDatabase = process.env.DB_NAME || 'rcc_aps';
-process.env.DB_NAME = database;
 delete process.env.GOOGLE_CLIENT_ID;
 const audience = '123456789-sso-test.apps.googleusercontent.com';
 const {privateKey,publicKey} = crypto.generateKeyPairSync('rsa',{modulusLength:2048});
@@ -15,7 +12,7 @@ const originalCerts = OAuth2Client.prototype.getFederatedSignonCertsAsync;
 OAuth2Client.prototype.getFederatedSignonCertsAsync = async () => ({certs:{'sso-test':publicKey.export({type:'spki',format:'pem'})}});
 let root,server;
 async function run() {
-  root = await mysql.createConnection({host:process.env.DB_HOST || 'localhost',user:process.env.DB_USER || 'root',password:process.env.DB_PASSWORD || ''});
+  root = await createFixture('sso');
   await require('../server/db/init').init();
   const db = require('../server/db');
   const password = 'test-only-sso-password';
@@ -107,7 +104,7 @@ async function run() {
   assert.equal((await db.assembleState()).users.filter(user=>user.email==='employee@rcc.edu.ph').length,1);
   await db.q("UPDATE auth SET status='Active' WHERE id=3");
   await db.persistState(await db.assembleState());
-  assert.equal((await db.q('SELECT googleSub FROM auth WHERE id=3'))[0].googleSub,'google-existing','Regular saves preserve the Google binding');
+  assert.equal((await db.q('SELECT "googleSub" FROM auth WHERE id=3'))[0].googleSub,'google-existing','Regular saves preserve the Google binding');
   const administrator = await request('/api/data',null,{Authorization:'Bearer '+passwordLogin.data.token});
   administrator.data.users.find(user=>user.id===3).email='outside@gmail.com';
   assert.equal((await request('/api/data',administrator.data,{Authorization:'Bearer '+passwordLogin.data.token})).status,400);
@@ -120,9 +117,6 @@ async function run() {
 run().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{
   OAuth2Client.prototype.getFederatedSignonCertsAsync = originalCerts;
   if(server)await new Promise(resolve=>server.close(resolve));
-  if(root){
-    if(!/^rcc_aps_sso_validation_\d+$/.test(database) || database===originalDatabase)throw Error('Unsafe test database cleanup');
-    await root.query('DROP DATABASE IF EXISTS `'+database+'`');await root.end();
-  }
+  if(root) await root.cleanup();
   process.exit(process.exitCode || 0);
 });

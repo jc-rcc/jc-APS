@@ -26,9 +26,9 @@ assert.equal((directorySource.match(/\$\{userPhotoMarkup\(u\)\}/g)||[]).length,2
  input.files=[{type:'image/png',size:6*1024*1024}];await vm.runInContext('uploadProfilePhoto(document.getElementById("profilePhotoInput"))',ctx);assert.equal(saved,1);
  // Verify database round-trip without changing real records.
  let stored=[];
- const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async()=>{},release(){},query:async(sql,params)=>{sql=sql.replaceAll('`','');if(/INSERT INTO profiles/.test(sql))stored.push({id:params[0],empPhone:params[1],empAddr:params[2],photo:params[3]});return [[]];}};
+ const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async()=>{},release(){},query:async(sql,params)=>{sql=sql.replace(/["`]/g,'');if(/INSERT INTO profiles/.test(sql))stored.push({id:params[0],empPhone:params[1],empAddr:params[2],photo:params[3]});return [[]];}};
  const pool={getConnection:async()=>connection,execute:async sql=>[sql.includes('FROM profiles')?stored:/FROM phil_data|FROM pag_data/.test(sql)?[{}]:[]]};
- const server=vm.createContext({module:{exports:{}},require:name=>name==='mysql2/promise'?{createPool:()=>pool}:name==='./db/state-writer'?require('../server/db/state-writer'):{},process:{env:{}},console});
+ const server=vm.createContext({module:{exports:{}},require:name=>name==='./db/postgres'?{query:pool.execute,transaction:async work=>work(connection),readTransaction:async work=>work(connection)}:name==='./db/state-writer'?require('../server/db/state-writer'):{},process:{env:{}},console});
  vm.runInContext(fs.readFileSync(__dirname+'/../server/db.js','utf8'),server);
  await server.module.exports.persistState({profiles:ctx.PROFILES});
  const state=await server.module.exports.assembleState();
