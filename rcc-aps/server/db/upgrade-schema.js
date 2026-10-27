@@ -23,7 +23,7 @@ async function upgradeSchema(c) {
   const [duplicate] = await c.query('SELECT empId, year, month FROM payroll_records GROUP BY empId, year, month HAVING COUNT(*)>1');
   if (duplicate.length) throw new Error('Duplicate payroll periods must be resolved before migration');
   await c.query('ALTER TABLE leave_records MODIFY days DECIMAL(6,2) NOT NULL DEFAULT 0');
-  await c.query('ALTER TABLE payroll_records MODIFY bonuses MEDIUMTEXT NOT NULL');
+  await c.query("ALTER TABLE payroll_records MODIFY bonuses MEDIUMTEXT NOT NULL DEFAULT ('[]')");
   await c.query('ALTER TABLE users MODIFY rankId INT NULL DEFAULT NULL');
   await c.query('UPDATE users SET rankId=NULL WHERE rankId=0');
   await c.query('ALTER TABLE attendance MODIFY empId INT NULL DEFAULT NULL');
