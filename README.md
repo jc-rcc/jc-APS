@@ -4,7 +4,9 @@ Independent academic deployment of the RCC Automated Payroll System: Node.js 22,
 
 Repository: https://github.com/jc-rcc/jc-APS
 
-Read [DEPLOYMENT.md](DEPLOYMENT.md) for architecture, CI/CD, setup, verification and assignment deliverables. Live deployment is pending setup. Use a separate hosting project, database and credentials.
+**Live application:** https://jc-aps.vercel.app
+
+Read [DEPLOYMENT.md](DEPLOYMENT.md) for architecture, CI/CD, setup, verification and assignment deliverables. The Vercel application and separate Supabase database are running. GitHub Actions CI checks pass; its automated deployment job still needs the Vercel deployment secrets before an end-to-end release can be verified.
 
 Application source is in `rcc-aps/`. With Node.js 22 installed:
 

@@ -4,7 +4,13 @@
 
 JC-APS is an independent academic copy of the RCC Automated Payroll System, deployed only from **https://github.com/jc-rcc/jc-APS**. The original `jc-rcc/rcc-aps` checkout, hosting project and MySQL database are not changed or reused.
 
-The assignment Supabase project **`jc-aps`** has been created in **Tokyo (`ap-northeast-1`)**. Application/database connection, demo provisioning and live Vercel verification are still pending. No older deployment URL should be submitted as the new application's URL.
+The assignment application is live at **https://jc-aps.vercel.app**. Its separate Supabase project **`jc-aps`** is hosted in **Tokyo (`ap-northeast-1`)**. The database schema and three demo accounts have been provisioned, and the database connection uses verified TLS.
+
+**Status verified on 27 October 2026:** the live page and `/api/health` return HTTP 200; the API identifies PostgreSQL as its database. Admin password login has been verified on the live application. Admin, finance and employee login/data access have also been tested through the local API against the assignment Supabase database. These checks do not replace full manual verification of payroll workflows.
+
+The latest live recheck confirms admin login and authenticated data access. Finance and employee login attempts using their current local `.env` password values returned HTTP 401; reconcile those local password values with the provisioned accounts before supplying them to the evaluator. No credentials are included in this repository or report.
+
+**Remaining CI/CD requirement:** GitHub Actions successfully installs dependencies and passes syntax, smoke and PostgreSQL integration tests. Its production deployment job is configured but has not completed successfully: the latest checked run stops at the missing Vercel credentials check. Add `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` to GitHub's `production` environment, then verify a successful build-and-deploy run before claiming the final assignment is complete. The initial live application was published through the Vercel dashboard/Git project setup.
 
 ## 1. Architecture and infrastructure choice
 
@@ -50,6 +56,8 @@ The app reads broad state snapshots, serializes writes and stores profile photos
 
 Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). It runs on pull requests targeting `main` and pushes/merges to `main`.
 
+The steps below describe the configured pipeline. CI is verified; automatic production deployment remains blocked by missing GitHub deployment secrets. [Checked run: CI passed, deployment credentials missing](https://github.com/jc-rcc/jc-APS/actions/runs/40454275443).
+
 1. Check out source and install Node.js 22.
 2. Run `npm ci` against the application lockfile.
 3. Run JavaScript syntax checks and smoke tests, including real HTTP checks for the serverless entry, frontend assets, health response and protected API routes.
@@ -92,10 +100,11 @@ Production jobs are serialized. Require `checks` through branch protection befor
 
 | Deliverable | Link/status |
 | --- | --- |
-| New live application | **Pending Vercel configuration, database provisioning and live functional verification** |
+| New live application | https://jc-aps.vercel.app |
 | CI/CD configuration | https://github.com/jc-rcc/jc-APS/blob/main/.github/workflows/deploy.yml |
 | Architecture document | https://github.com/jc-rcc/jc-APS/blob/main/DEPLOYMENT.md |
-| Successful release evidence | Add the successful Actions run URL after deployment |
+| CI evidence | https://github.com/jc-rcc/jc-APS/actions/runs/40454275443 — checks passed; deploy blocked by missing credentials |
+| Successful automated release evidence | **Pending GitHub Vercel secrets and a successful production deployment run** |
 
 ## References
 
