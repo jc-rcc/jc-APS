@@ -96,7 +96,7 @@ async function fetchHrisData() {
 
 // ── HEALTH & DB STATUS ───────────────────────────────────────
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', service: 'RCC-APS Payroll System API', database: 'PostgreSQL', hris: HRIS_API_URL ? 'connected' : 'mock' });
+  res.json({ status: 'ok', service: 'RCC-APS Payroll System API', database: 'PostgreSQL', hris: HRIS_API_URL ? 'connected' : 'mock', revision: process.env.VERCEL_GIT_COMMIT_SHA || 'local' });
 });
 
 app.get('/api/db/status', requireAuth, requireRole('admin','finance'), async (req, res) => {

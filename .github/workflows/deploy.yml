@@ -1,13 +1,22 @@
-name: JC-APS CI and Production Deployment
+name: JC-APS CI and Verified Vercel Deployment
 
 on:
   push:
     branches: [main]
+    paths:
+      - 'rcc-aps/**'
+      - '.github/workflows/deploy.yml'
+      - '.vercelignore'
   pull_request:
     branches: [main]
+    paths:
+      - 'rcc-aps/**'
+      - '.github/workflows/deploy.yml'
+      - '.vercelignore'
 
 permissions:
   contents: read
+  statuses: read
 
 jobs:
   checks:
@@ -48,47 +57,20 @@ jobs:
         run: node test/google-sso.integration.js
 
   deploy:
+    name: Verify automatic Vercel production deployment
     needs: checks
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'jc-rcc/jc-APS'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    concurrency:
-      group: jc-aps-production
-      cancel-in-progress: false
-    environment: production
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    timeout-minutes: 12
+    environment:
+      name: production
+      url: https://jc-aps.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Require deployment credentials
-        shell: bash
-        run: |
-          for name in VERCEL_ORG_ID VERCEL_PROJECT_ID VERCEL_TOKEN; do
-            if [ -z "${!name}" ]; then
-              echo "::error::Missing GitHub production environment secret: $name"
-              exit 1
-            fi
-          done
-      - name: Install locked deployment tools
-        run: npm ci --prefix deployment
-      - name: Pull production project configuration
-        run: deployment/node_modules/.bin/vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
-      - name: Build production artifact
-        run: deployment/node_modules/.bin/vercel build --prod --token="$VERCEL_TOKEN"
-      - name: Deploy built artifact
-        id: release
-        shell: bash
-        run: |
-          url=$(deployment/node_modules/.bin/vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "### Production deployment" >> "$GITHUB_STEP_SUMMARY"
-          echo "$url" >> "$GITHUB_STEP_SUMMARY"
-      - name: Verify public application and API
+      - name: Verify matching Vercel Git deployment and live application
         env:
-          DEPLOYMENT_URL: ${{ steps.release.outputs.url }}
-        run: node rcc-aps/scripts/verify-deployment.js
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node rcc-aps/scripts/verify-vercel-git-deployment.js
