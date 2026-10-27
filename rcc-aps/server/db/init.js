@@ -119,7 +119,7 @@ async function init() {
     const seedData0 = fs.existsSync(seedPath0) ? JSON.parse(fs.readFileSync(seedPath0, 'utf8')) : {};
     if (rankRows[0].cnt === 0 && Array.isArray(seedData0.teacherRanks) && seedData0.teacherRanks.length) {
       for (const r of seedData0.teacherRanks) {
-        await pool.query('INSERT INTO teacher_ranks (id, department, rank, rate) VALUES (?,?,?,?)', [r.id, r.department, r.rank, r.rate]);
+        await pool.query('INSERT INTO teacher_ranks (id, department, `rank`, rate) VALUES (?,?,?,?)', [r.id, r.department, r.rank, r.rate]);
       }
       console.log(`[MySQL] Seeded ${seedData0.teacherRanks.length} teacher ranks.`);
       const maxRankId0 = Math.max(...seedData0.teacherRanks.map(r => r.id));
@@ -132,7 +132,7 @@ async function init() {
       const gradRanks = seedData0.teacherRanks.filter(r => r.department === 'Graduate School');
       if (gradRanks.length) {
         for (const r of gradRanks) {
-          await pool.query('INSERT INTO teacher_ranks (id, department, rank, rate) VALUES (?,?,?,?)', [r.id, r.department, r.rank, r.rate]);
+          await pool.query('INSERT INTO teacher_ranks (id, department, `rank`, rate) VALUES (?,?,?,?)', [r.id, r.department, r.rank, r.rate]);
         }
         console.log(`[MySQL] Seeded ${gradRanks.length} Graduate School teacher ranks.`);
         const maxRankId = Math.max(...gradRanks.map(r => r.id));

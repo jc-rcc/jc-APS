@@ -224,7 +224,7 @@ async function persistState(s) {
     // teacher ranks
     for (const r of s.teacherRanks || []) {
       await c.query(
-        'INSERT INTO teacher_ranks (id, department, rank, rate) VALUES (?,?,?,?)',
+        'INSERT INTO teacher_ranks (id, department, `rank`, rate) VALUES (?,?,?,?)',
         [r.id, r.department || 'College', r.rank || '', r.rate || 0]
       );
     }

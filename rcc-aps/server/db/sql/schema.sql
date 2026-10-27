@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS bir_table (
 CREATE TABLE IF NOT EXISTS teacher_ranks (
   id          INT PRIMARY KEY,
   department  VARCHAR(20)  NOT NULL DEFAULT 'College',
-  rank        VARCHAR(120) NOT NULL DEFAULT '',
+  `rank`      VARCHAR(120) NOT NULL DEFAULT '',
   rate        DECIMAL(10,2) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
