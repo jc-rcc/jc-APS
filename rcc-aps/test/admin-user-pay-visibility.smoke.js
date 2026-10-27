@@ -1,0 +1,26 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const source=fs.readFileSync(__dirname+'/../public/js/deductions.js','utf8');
+const html=fs.readFileSync(__dirname+'/../public/index.html','utf8');
+const elements=Object.fromEntries([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>[m[1],{value:'',innerHTML:'',style:{},classList:{add(){},remove(){}}}]));
+const user={id:3,first:'Paolo',last:'Mendoza',email:'paolo@rcc.edu.ph',role:'Employee',status:'Active',classification:'Teaching',schoolLevel:'College',department:'Computer Studies',salary:28500,hourlyRate:190,rankId:3,rankName:'Instructor 1',rateCustom:true,hireDate:'2025-06-01',hoursWorked:150,date:'Oct 20, 2026'};
+let saved=0;
+const ctx=vm.createContext({loggedInUser:{role:'admin'},editingUserId:3,salaryAuto:false,users:[user],nextUserId:4,viewCurrentUserId:null,document:{getElementById:id=>elements[id]||null},rankById:()=>({rank:'Instructor 1',rate:190}),fillRankSelect:()=>{throw Error('Admin must not populate rate options');},esc:s=>String(s),displayName:u=>u.first+' '+u.last,initials:()=> 'PM',userPhotoMarkup:()=> 'PM',roleColor:{Employee:'blue'},roleBadge:{Employee:'b-blue'},EMP_CLASS:{Teaching:{badge:'b-blue'}},infoBox:(label,value)=>label+': '+value,ensureAuth(){},closeModal(){},showToast(){},saveDemo(){saved++;},renderUserTable(){},renderAdminRecentUsers(){},updateAdminStats(){}});
+for(const name of ['isAdminUserManagement','openAddUserModal','openEditUserModal','toggleUserClassFields','updateHourlyRateLabel','saveUser','viewUser']) vm.runInContext(source.match(new RegExp('(?:async )?function '+name+'[\\s\\S]*?\\n}'))[0],ctx);
+vm.runInContext('viewUser(3)',ctx);
+assert.doesNotMatch(elements.viewUserBody.innerHTML,/Monthly Base|Hourly Rate|28500|190\.00/);
+assert.match(elements.viewUserBody.innerHTML,/Paolo Mendoza/);
+vm.runInContext('openEditUserModal(3)',ctx);
+assert.equal(elements.uCompensationFields.hidden,true);
+assert.equal(elements.uSalary.value,'');assert.equal(elements.uHourly.value,'');assert.equal(elements.uRank.innerHTML,'');
+// Even stale or manipulated hidden inputs cannot overwrite pay on a metadata save.
+elements.uSalary.value='1';elements.uHourly.value='2';elements.uRank.value='99';elements.uFirst.value='Paolo Updated';
+vm.runInContext('saveUser()',ctx);
+assert.equal(user.first,'Paolo Updated');assert.equal(user.salary,28500);assert.equal(user.hourlyRate,190);assert.equal(user.rankId,3);assert.equal(user.rankName,'Instructor 1');assert.equal(user.rateCustom,true);assert.equal(saved,1);
+vm.runInContext('openAddUserModal()',ctx);
+elements.uFirst.value='New';elements.uLast.value='Employee';elements.uEmail.value='new@rcc.edu.ph';elements.uRole.value='Employee';elements.uStatus.value='Active';elements.uPass.value='test-only-password';elements.uClass.value='Non-Teaching';elements.uHire.value='2025-06-01';
+vm.runInContext('saveUser()',ctx);
+assert.equal(ctx.users.length,2);assert.equal(ctx.users[1].salary,0);
+ctx.loggedInUser.role='finance';
+vm.runInContext('viewUser(3)',ctx);
+assert.match(elements.viewUserBody.innerHTML,/Monthly Base/);
+console.log('PASS: Admin profiles/forms hide salary/rate and rank pricing; metadata edits preserve compensation; new accounts do not require salary; Finance view retained.');

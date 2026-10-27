@@ -1,0 +1,30 @@
+{
+  "name": "rcc-aps",
+  "version": "1.0.0",
+  "description": "Republic Central Colleges - Automated Payroll System",
+  "main": "server/server.js",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "lint": "node scripts/checks.js lint",
+    "test": "node scripts/checks.js test",
+    "db:bootstrap-demo": "node scripts/bootstrap-demo.js"
+  },
+  "keywords": [
+    "payroll",
+    "rcc",
+    "aps",
+    "philippines"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.19.2",
+    "google-auth-library": "^11.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.3"
+  }
+}

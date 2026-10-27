@@ -1,0 +1,11 @@
+.git
+.github
+deployment
+**/node_modules
+**/test
+**/tmp
+**/backups
+**/.env*
+**/.jwt-secret
+*.sql
+*.jpg

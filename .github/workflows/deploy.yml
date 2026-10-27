@@ -1,0 +1,95 @@
+name: JC-APS CI and Production Deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci-only-password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pci-only-password"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    defaults:
+      run:
+        working-directory: rcc-aps
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: ci-only-password
+      JWT_SECRET: ci-only-secret-never-use-in-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: rcc-aps/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check JavaScript syntax
+        run: npm run lint
+      - name: Run smoke and serverless HTTP tests
+        run: npm test
+      - name: Test schema upgrades and data persistence against MySQL
+        run: node test/database-upgrade.integration.js
+      - name: Test Google authentication against isolated MySQL
+        run: node test/google-sso.integration.js
+
+  deploy:
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'jc-rcc/jc-APS'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: jc-aps-production
+      cancel-in-progress: false
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require deployment credentials
+        shell: bash
+        run: |
+          for name in VERCEL_ORG_ID VERCEL_PROJECT_ID VERCEL_TOKEN; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing GitHub production environment secret: $name"
+              exit 1
+            fi
+          done
+      - name: Install locked deployment tools
+        run: npm ci --prefix deployment
+      - name: Pull production project configuration
+        run: deployment/node_modules/.bin/vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build production artifact
+        run: deployment/node_modules/.bin/vercel build --prod --token="$VERCEL_TOKEN"
+      - name: Deploy built artifact
+        id: release
+        shell: bash
+        run: |
+          url=$(deployment/node_modules/.bin/vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "### Production deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify public application and API
+        env:
+          DEPLOYMENT_URL: ${{ steps.release.outputs.url }}
+        run: node rcc-aps/scripts/verify-deployment.js

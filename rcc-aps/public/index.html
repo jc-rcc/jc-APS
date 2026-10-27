@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>RCC-APS | Automated Payroll System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css?v=20261020c"/>
+  <link rel="stylesheet" href="css/responsive.css?v=20261020a"/>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     M1 — LOGIN PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="loginPage" style="display:flex;width:100%;min-height:100vh;font-family:'Source Sans 3',sans-serif">
+
+  <!-- LEFT PANEL -->
+  <div class="login-left" style="width:43%;background:#6B1A1A;background:linear-gradient(160deg,#7B1E1E 0%,#4A0E0E 100%);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:48px 40px;position:relative;overflow:hidden">
+
+    <!-- Background circles -->
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,0.06);top:-80px;right:-80px"></div>
+    <div style="position:absolute;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,0.04);bottom:100px;left:-60px"></div>
+
+    <!-- RCC Logo -->
+    <img class="lp-rcc" src="assets/RCC_LOGO.png" alt="RCC Logo" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:32px;box-shadow:0 4px 20px rgba(0,0,0,0.3);border:3px solid rgba(201,168,76,0.5)"/>
+
+    <!-- RCC-APS Logo -->
+    <img src="assets/APS_LOGO.png" alt="APS Logo" style="height:100px;width:auto;margin-bottom:12px"/>
+
+    <!-- Divider -->
+    <div style="width:48px;height:2px;background:linear-gradient(90deg,transparent,#C9A84C,transparent);margin-bottom:16px"></div>
+
+    <!-- Tagline -->
+    <div class="lp-tagline" style="font-size:13px;color:rgba(255,255,255,0.7);text-align:center;line-height:1.7;margin-bottom:36px;max-width:280px">
+      A streamlined payroll management system built<br/>for accuracy, compliance, and transparency.
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="lp-feats" style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px">
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(201,168,76,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">⚡</div>
+        <div>
+          <div style="font-weight:700;color:#fff;font-size:13px">Auto Computation</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">SSS, PhilHealth, Pag-IBIG , BIR & Net Pay</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(201,168,76,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🔒</div>
+        <div>
+          <div style="font-weight:700;color:#fff;font-size:13px">Role-Based Access</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">Admin, Finance Officer, Employee</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(201,168,76,0.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📄</div>
+        <div>
+          <div style="font-weight:700;color:#fff;font-size:13px">Digital Payslips</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px">View & download in PDF format</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="login-right" style="flex:1;background:#F8F5F0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;position:relative">
+
+    <!-- Login Form -->
+    <div id="loginForm" style="width:100%;max-width:420px">
+      <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#1a1a1a;margin-bottom:8px">Welcome Back</div>
+      <div style="font-size:15px;color:#888;margin-bottom:36px">Sign in to access your RCC-APS dashboard.</div>
+
+      <div class="err-box" id="errBox">⚠️ <span id="errText">Invalid email or password.</span></div>
+
+      <!-- Email -->
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:8px">Email Address</label>
+        <div style="display:flex;align-items:center;background:#fff;border:1.5px solid #E0D8D0;border-radius:10px;overflow:hidden;transition:border 0.2s">
+          <span style="padding:0 14px;font-size:16px;color:#aaa">✉</span>
+          <input style="flex:1;border:none;outline:none;padding:14px 0;font-size:14px;font-family:'Source Sans 3',sans-serif;background:transparent;color:#222" type="email" id="emailInp" placeholder="you@rcc.edu.ph"/>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div style="margin-bottom:32px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:8px">Password</label>
+        <div style="display:flex;align-items:center;background:#fff;border:1.5px solid #E0D8D0;border-radius:10px;overflow:hidden">
+          <span style="padding:0 14px;font-size:16px;color:#aaa">🔑</span>
+          <input style="flex:1;border:none;outline:none;padding:14px 0;font-size:14px;font-family:'Source Sans 3',sans-serif;background:transparent;color:#222" type="password" id="passInp" placeholder="Enter your password"/>
+          <button onclick="togglePass()" id="eyeBtn" style="background:none;border:none;padding:0 14px;cursor:pointer;font-size:16px;color:#aaa">👁</button>
+        </div>
+      </div>
+
+      <!-- Sign In Button -->
+      <button id="loginBtn" onclick="handleLogin()" style="width:100%;padding:16px;background:linear-gradient(135deg,#6B1A1A,#4A0E0E);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;font-family:'Source Sans 3',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;letter-spacing:0.5px">
+        <span id="btnText">Sign In</span>
+        <span style="font-size:18px">→</span>
+        <div class="spinner" id="spinner" style="display:none"></div>
+      </button>
+
+      <div style="display:flex;align-items:center;gap:12px;margin:22px 0;color:#999;font-size:12px"><span style="height:1px;background:#ddd;flex:1"></span>OR<span style="height:1px;background:#ddd;flex:1"></span></div>
+      <div id="googleSignInButton" style="display:flex;justify-content:center;min-height:44px">
+        <button type="button" disabled style="width:100%;padding:12px;background:#fff;border:1px solid #dadce0;border-radius:4px;color:#777;font:500 14px Arial,sans-serif">Continue with Google</button>
+      </div>
+      <div id="googleSignInStatus" role="status" style="text-align:center;font-size:12px;color:#777;margin-top:10px">Loading Google sign-in...</div>
+
+      <!-- Footer -->
+      <div style="text-align:center;margin-top:28px;font-size:13px;color:#999">
+        Having trouble logging in? Contact your <a href="#" style="color:#6B1A1A;font-weight:600;text-decoration:none">System Administrator</a> for assistance.
+      </div>
+    </div>
+
+    <!-- RBAC Redirect Screen -->
+    <div id="rdScreen" style="display:none;width:100%;max-width:420px;text-align:center">
+      <div id="rdIcon" style="font-size:72px;margin-bottom:20px">👤</div>
+      <div id="rdTitle" style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#1a1a1a;margin-bottom:10px">Welcome!</div>
+      <div id="rdSub" style="font-size:15px;color:#555;margin-bottom:8px">Role detected: <strong id="rdRoleLabel">Employee</strong> → Loading your dashboard...</div>
+      <div style="width:200px;height:3px;background:#E0D8D0;border-radius:3px;margin:20px auto">
+        <div id="rdBar" style="width:0%;height:100%;background:linear-gradient(90deg,#6B1A1A,#C9A84C);border-radius:3px;transition:width 2s ease"></div>
+      </div>
+      <div id="rdNote" style="font-size:13px;color:#999;font-style:italic">Redirecting to dashboard...</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-foot" style="position:absolute;bottom:24px;font-size:11px;color:#BBB;text-align:center">
+      RCC-APS v1.0 · Republic Central Colleges · College of Computer Studies · © 2026
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     EMPLOYEE DASHBOARD
+════════════════════════════════════════════════════════════ -->
+<div class="dashboard-page" id="empPage">
+  <aside class="sidebar">
+    <div class="sb-logo" style="padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <img src="assets/RCC_LOGO.png" alt="RCC Logo" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(201,168,76,0.5);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.25)"/>
+      <div><div class="sys" style="font-size:14px;font-weight:700;color:#fff">RCC-APS</div><div class="sub" style="font-size:11px;color:rgba(255,255,255,0.6)">Payroll System</div></div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">Main Menu</div>
+      <button class="nav-item active" onclick="showEmpPage('empDashboard',this)"><span class="nav-icon">🏠</span> Dashboard</button>
+      <button class="nav-item" onclick="showEmpPage('empPayslip',this)"><span class="nav-icon">📄</span> My Payslip</button>
+      <button class="nav-item" onclick="showEmpPage('empProfile',this)"><span class="nav-icon">👤</span> My Profile</button>
+      <button class="nav-item" id="empTlNav" onclick="showEmpPage('empTeachingLoad',this)"><span class="nav-icon">📚</span> Teaching Load</button>
+      <button class="nav-item" onclick="showEmpPage('empPassword',this)"><span class="nav-icon">🔑</span> Change Password</button>
+    </div>
+    <div class="sb-footer"><button class="logout-btn" onclick="logout()"><span>🚪</span> Log Out</button></div>
+  </aside>
+  <div class="dash-main">
+    <div class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar('empPage')" aria-label="Open menu">☰</button>
+      <div class="tb-right">
+        <div style="display:flex;align-items:center;gap:8px;background:#F5F0E8;border:1px solid #E0D0B8;border-radius:8px;padding:6px 14px;font-size:13px;color:#666">📅 <span id="empDateDisplay">May 03, 2026</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="tb-avatar" id="empAvatar">JG</div><div><div class="tb-name" id="empTbName">Jhon Gerald Batuaan</div><div class="tb-role">Employee</div></div></div>
+      </div>
+    </div>
+    <div class="dash-content">
+
+      <!-- Emp Dashboard -->
+      <div id="empDashboard">
+        <div class="hero-banner">
+          <div class="hero-left">
+            <div class="hero-tag" id="empHeroTag">🌅 Good Morning</div>
+            <div class="hero-name" id="empHeroName">Welcome back, Gerald! 👋</div>
+            <div class="hero-sub" id="empHeroSub">Here is your payroll summary for April 2026.</div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-val" id="empHeroBasic">₱28,500</div><div class="hero-stat-lbl">Basic Pay</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="empHeroNet">₱25,412.50</div><div class="hero-stat-lbl">Net Pay (Est.)</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="empHeroNext">Apr 30</div><div class="hero-stat-lbl">Next Payout</div></div>
+          </div>
+        </div>
+        <div class="stats-grid s4">
+          <div class="stat-card"><div class="stat-icon" style="background:var(--gold-pale)">💰</div><div><div class="stat-val" id="empStatNet">₱25,412.50</div><div class="stat-lbl">Net Pay This Month</div><div class="stat-note">Includes BIR deduction</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E3F2FD">📄</div><div><div class="stat-val" id="empStatPayslips">12</div><div class="stat-lbl">Payslips Available</div><div class="stat-note">Since Jan 2025</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E8F5E9">📉</div><div><div class="stat-val" id="empStatDed">₱3,087.50</div><div class="stat-lbl">Total Deductions</div><div class="stat-note">SSS + PhilHealth + Pag-IBIG + BIR</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#F3E5F5">📅</div><div><div class="stat-val" id="empStatNext">Apr 30</div><div class="stat-lbl">Next Payroll</div><div class="stat-note">2 days from now</div></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:20px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">📄 Recent Payslips</div><button class="btn btn-outline btn-sm" onclick="showEmpPage('empPayslip',null)">View All</button></div>
+            <div style="padding:0"><table><thead><tr><th>Period</th><th>Gross Pay</th><th>Net Pay</th><th>Status</th></tr></thead>
+            <tbody id="empRecentPayslipBody"></tbody></table></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Emp Payslip History -->
+      <div id="empPayslip" style="display:none">
+        <div class="pg-title">My Payslips</div>
+        <div class="pg-sub">View and download your payslip records.</div>
+        <div class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:16px">📄</span>
+              <div class="card-title">Payslip Records</div>
+            </div>
+            <select class="fi" style="width:110px" id="psYear" onchange="renderPayslipList()">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+            </select>
+          </div>
+          <div style="padding:0">
+            <table>
+              <thead><tr><th>Period</th><th>Gross Pay</th><th>Deductions</th><th>Net Pay</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="psListBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payslip Detail Viewer (shared) -->
+      <div id="payslipDetailPage" style="display:none">
+        <div style="margin-bottom:16px">
+          <button id="psBackBtn" onclick="closePayslipDetail()" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--maroon-dark);display:flex;align-items:center;gap:6px;padding:0">
+            ← Back to My Payslips
+          </button>
+        </div>
+
+        <!-- Payslip Document -->
+        <div class="ps-viewer">
+          <div class="card" style="padding:0">
+            <div id="psDoc" class="ps-document">
+              <!-- Content rendered by JS -->
+            </div>
+            <div style="padding:0 48px 32px;display:flex;justify-content:center">
+              <button class="btn btn-primary" onclick="printPayslip()" style="padding:12px 32px;display:flex;align-items:center;gap:8px">
+                📥 Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emp Profile -->
+      <div id="empProfile" style="display:none">
+        <div class="pg-title">My Profile</div>
+        <div class="pg-sub">View and update your personal contact information.</div>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px">
+          <div class="card">
+            <div class="card-body" style="text-align:center">
+              <div id="empProfAvatar" style="width:80px;height:80px;border-radius:50%;background:var(--maroon);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;margin:0 auto 16px;border:3px solid var(--gold)">JG</div>
+              <button type="button" class="btn btn-outline btn-sm profile-photo-button" style="margin-bottom:12px" onclick="chooseProfilePhoto()">Change photo</button>
+              <div id="empProfName" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)">Jhon Gerald Batuaan</div>
+              <div id="empProfRole" style="font-size:12px;color:var(--text-muted);margin-top:4px">Employee</div>
+              <div id="empProfStatus" style="margin-top:12px"><span class="badge b-green">● Active</span></div>
+              <div style="margin-top:16px;font-size:12px;color:var(--text-muted)">Employee ID<br/><strong id="empProfId" style="color:var(--text)">#USR-001</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">✏️ Edit Contact Information</div></div>
+            <div class="card-body">
+              <div class="fg-row">
+                <div class="fg"><label class="fl">First Name</label><input class="fi" id="empProfFirst" value="Jhon Gerald" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+                <div class="fg"><label class="fl">Last Name</label><input class="fi" id="empProfLast" value="Batuaan" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+              </div>
+              <div class="fg"><label class="fl">Email Address</label><input class="fi" id="empProfEmail" value="employee@rcc.edu.ph" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+              <div class="fg-row">
+                <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="empPhone" value="09171234567" placeholder="09XXXXXXXXX"/></div>
+                <div class="fg"><label class="fl">Department</label><input class="fi" id="empProfDept" value="Finance Department" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+              </div>
+              <div class="fg"><label class="fl">Home Address</label><input class="fi" id="empAddr" value="123 Mabini St., Angeles City, Pampanga" placeholder="Enter your home address"/></div>
+              <div style="margin-top:8px;display:flex;gap:10px">
+                <button class="btn btn-primary" onclick="saveProfile()">💾 Save Changes</button>
+        </div>
+      </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emp Teaching Load (employee-submitted, tabs per semester) -->
+      <div id="empTeachingLoad" style="display:none">
+        <div class="pg-title">📚 Teaching Load</div>
+        <div class="pg-sub">Encode your schedule of classes and workload for each semester. This is the basis for payroll computation.</div>
+        <div id="tlFormHost" style="max-width:1100px;margin:16px auto 0"></div>
+      </div>
+
+      <!-- Emp Change Password -->
+      <div id="empPassword" style="display:none">
+        <div class="pg-title">Change Password</div>
+        <div class="pg-sub">Keep your account secure by updating your password regularly.</div>
+        <div style="max-width:480px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">🔑 Update Password</div></div>
+            <div class="card-body">
+              <div class="fg"><label class="fl">Current Password</label><input class="fi" type="password" id="pwCurrent" placeholder="Enter current password"/></div>
+              <div class="fg"><label class="fl">New Password</label><input class="fi" type="password" id="pwNew" placeholder="Enter new password"/></div>
+              <div class="fg"><label class="fl">Confirm New Password</label><input class="fi" type="password" id="pwConfirm" placeholder="Confirm new password"/></div>
+              <div id="pwError" class="modal-err"></div>
+              <div style="margin-top:8px"><button class="btn btn-primary" onclick="changePassword()">🔑 Update Password</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINANCE OFFICER DASHBOARD
+════════════════════════════════════════════════════════════ -->
+<div class="dashboard-page" id="financePage">
+  <aside class="sidebar">
+    <div class="sb-logo" style="padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <img src="assets/RCC_LOGO.png" alt="RCC Logo" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(201,168,76,0.5);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.25)"/>
+      <div><div class="sys" style="font-size:14px;font-weight:700;color:#fff">RCC-APS</div><div class="sub" style="font-size:11px;color:rgba(255,255,255,0.6)">Payroll System</div></div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">Main Menu</div>
+      <button class="nav-item active" onclick="showFinPage('finDashboard',this)"><span class="nav-icon">🏠</span> Dashboard</button>
+      <button class="nav-item" onclick="showFinPage('finAnalytics',this)"><span class="nav-icon">📊</span> Analytics</button>
+      <button class="nav-item" onclick="showFinPage('finPayroll',this)"><span class="nav-icon">💰</span> Payroll Calculation</button>
+      <button class="nav-item" onclick="showFinPage('finRanks',this)"><span class="nav-icon">🎓</span> Faculty Rank Tables</button>
+      <button class="nav-item" onclick="showFinPage('finTeachingLoad',this)"><span class="nav-icon">📚</span> Teaching Loads</button>
+      <button class="nav-item" onclick="showFinPage('finFormula',this)"><span class="nav-icon">🧮</span> Formula Management</button>
+      <button class="nav-item" onclick="showFinPage('finBonus',this)"><span class="nav-icon">🎁</span> Bonus Management</button>
+      <button class="nav-item" onclick="showFinPage('finReports',this)"><span class="nav-icon">📋</span> Reports</button>
+      <button class="nav-item" onclick="showFinPage('finDeduction',this)"><span class="nav-icon">⚙️</span> Deduction Tables</button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">My Employee Info</div>
+      <button class="nav-item" onclick="showFinPage('finMyPayslip',this)"><span class="nav-icon">📄</span> My Payslip</button>
+      <button class="nav-item" onclick="showFinPage('finMyProfile',this)"><span class="nav-icon">👤</span> My Profile</button>
+      <button class="nav-item" onclick="showFinPage('finChangePassword',this)"><span class="nav-icon">🔑</span> Change Password</button>
+    </div>
+    <div class="sb-footer"><button class="logout-btn" onclick="logout()"><span>🚪</span> Log Out</button></div>
+  </aside>
+  <div class="dash-main">
+    <div class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar('financePage')" aria-label="Open menu">☰</button>
+      <div class="tb-right">
+        <div style="display:flex;align-items:center;gap:8px;background:#F5F0E8;border:1px solid #E0D0B8;border-radius:8px;padding:6px 14px;font-size:13px;color:#666">📅 <span id="finDateDisplay">May 03, 2026</span></div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="tb-avatar" id="finAvatar" style="background:#7D5A00">JC</div><div><div class="tb-name" id="finTbName">John Cabigting</div><div class="tb-role">Finance Officer</div></div></div>
+      </div>
+    </div>
+    <div class="dash-content">
+
+      <!-- Finance Dashboard -->
+      <div id="finDashboard">
+        <div class="hero-banner">
+          <div class="hero-left">
+            <div class="hero-tag">💼 Finance Officer</div>
+            <div class="hero-name" id="finHeroName">Good Morning, John! 👋</div>
+            <div class="hero-sub">April 2026 payroll is ready for processing.</div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="hero-stat-val" id="finTotEmp">0</div><div class="hero-stat-lbl">Total Employees</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="finTeachCnt">0</div><div class="hero-stat-lbl">Teaching</div></div>
+            <div class="hero-stat"><div class="hero-stat-val" id="finNonTeachCnt">0</div><div class="hero-stat-lbl">Non-Teaching</div></div>
+          </div>
+        </div>
+        <div class="stats-grid s4">
+          <div class="stat-card"><div class="stat-icon" style="background:var(--gold-pale)">💰</div><div><div class="stat-val" id="finTotGross">₱0.00</div><div class="stat-lbl">Total Gross Pay</div><div class="stat-note">April 2026</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#FDEDEC">📤</div><div><div class="stat-val" id="finTotDed">₱0.00</div><div class="stat-lbl">Total Deductions</div><div class="stat-note">All employees</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E8F5E9">✅</div><div><div class="stat-val" id="finTotNet">₱0.00</div><div class="stat-lbl">Total Net Pay</div><div class="stat-note">April 2026</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#FFF8E1">⏳</div><div><div class="stat-val" id="finPending">0</div><div class="stat-lbl">Pending</div><div class="stat-note">Needs processing</div></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">📋 Recent Payroll Activity</div><button class="btn btn-outline btn-sm" onclick="showFinPage('finPayroll',null)">Process Payroll</button></div>
+            <div style="padding:0"><table><thead><tr><th>Employee</th><th>Period</th><th>Net Pay</th><th>Status</th></tr></thead>
+            <tbody id="finRecentActivityBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px">Loading...</td></tr>
+            </tbody></table></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Finance Analytics Dashboard -->
+      <div id="finAnalytics" style="display:none">
+        <div class="pg-title">Analytics Dashboard</div>
+        <div class="pg-sub">Payroll cost trends, personnel classification cost breakdown, and government deductions summary.</div>
+
+        <div class="stats-grid s4" style="margin-bottom:24px">
+          <div class="stat-card"><div class="stat-icon" style="background:var(--gold-pale)">💰</div><div><div class="stat-val" id="anGross">₱0.00</div><div class="stat-lbl">Total Gross Payroll</div><div class="stat-note">2026 YTD</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E8F5E9">📤</div><div><div class="stat-val" id="anGovDed">₱0.00</div><div class="stat-lbl">Govt Deductions</div><div class="stat-note">SSS + Phil + Pag + BIR</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E3F2FD">🎓</div><div><div class="stat-val" id="anTeach">₱0.00</div><div class="stat-lbl">Teaching Cost</div><div class="stat-note" id="anTeachNote">% of total</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#FFF8E1">🧰</div><div><div class="stat-val" id="anNonTeach">₱0.00</div><div class="stat-lbl">Non-Teaching Cost</div><div class="stat-note" id="anNonTeachNote">% of total</div></div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:20px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">📈 Payroll Cost Trend — 2026</div></div>
+            <div class="card-body" id="trendChart" style="padding:20px 24px"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">🧮 Teaching vs Non-Teaching</div></div>
+            <div class="card-body" id="tnBreakdown" style="padding:20px 24px"></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head"><div class="card-title">🎁 13th Month Pay Cost Impact — December 2026</div></div>
+          <div class="card-body" id="bonusImpact" style="padding:20px 24px"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">🏛️ Government Deductions Summary</div></div>
+          <div style="padding:0"><table>
+            <thead><tr><th>Deduction</th><th>Monthly</th><th>YTD</th><th>Share of Total</th></tr></thead>
+            <tbody id="govtDedBody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Finance Bonus Management -->
+      <div id="finBonus" style="display:none">
+        <div class="pg-title">Bonus Table Management</div>
+        <div class="pg-sub">Compute the statutory 13th Month Pay per RA 8515 / DOLE — 1/12 of the total basic salary earned in the calendar year, prorated by actual service days — and configure additional bonus types.</div>
+
+        <div class="stats-grid s3" style="margin-bottom:24px">
+          <div class="stat-card"><div class="stat-icon" style="background:var(--gold-pale)">🎁</div><div><div class="stat-val" id="bonTotal">₱0.00</div><div class="stat-lbl">Total 13th Month Pay</div><div class="stat-note" id="bonTotalNote">Calendar Year 2026</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E8F5E9">👥</div><div><div class="stat-val" id="bonEligible">0</div><div class="stat-lbl">Eligible Employees</div><div class="stat-note">Any service rendered in the year</div></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#E3F2FD">⚙️</div><div><div class="stat-val" id="bonTypesCount">0</div><div class="stat-lbl">Bonus Types</div><div class="stat-note">Configurable</div></div></div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head">
+            <div class="card-title" id="bonTableTitle">🎁 13th Month Pay Computation (RA 8515) — 2026</div>
+            <div class="toolbar">
+              <select class="fi" id="bonYear" style="width:110px" onchange="renderBonusModule()"><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option></select>
+            </div>
+          </div>
+          <div id="bonPayoutBanner" style="display:flex;align-items:center;gap:10px;margin:0 16px 4px;padding:12px 16px;border:1px solid;border-radius:10px;font-size:12.5px;line-height:1.5"></div>
+          <div style="padding:0"><table>
+            <thead><tr><th>Employee</th><th>Classification</th><th>Date Hired</th><th>Status</th><th>Months in Year</th><th>Avg Monthly Pay</th><th>Proration</th><th>13th Month Pay</th><th>Payout Status</th></tr></thead>
+            <tbody id="bonTableBody"></tbody>
+          </table></div>
+          <div style="padding:12px 16px;background:#F9F7F4;border-top:1px solid #EEE8E0;font-size:12px;color:var(--text-muted)">
+            <strong>Formula (RA 8515 / DOLE):</strong> 13th Month Pay = Total Basic Salary Earned During the Calendar Year ÷ 12. Prorated by actual days of service for employees hired or separated mid-year. Everyone who rendered service during the year is entitled — no minimum-length rule. Payment on or before <strong>December 24</strong>. Not subject to SSS, PhilHealth, or Pag-IBIG. <strong>Tax-exempt only up to the configured annual limit</strong> (default <span id="bonFormulaExemption">₱90,000</span>/year, RA 10963 / CREATE Act); any excess is taxable income subject to BIR withholding.
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head">
+            <div class="card-title">⚖️ Government Compliance Settings — 13th Month Exemption Limit (RA 10963 / CREATE)</div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+              <div class="fg" style="min-width:240px">
+                <label class="fl">Annual Exemption Limit (₱/year)</label>
+                <input class="fi" type="number" step="1000" min="0" id="bonExemptionLimit" value="90000"/>
+              </div>
+              <button class="btn btn-primary" onclick="saveBonusExemptionLimit()">💾 Save Limit</button>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:var(--text-muted);line-height:1.6">
+              13th Month Pay + other taxable bonuses are income-tax exempt only up to this annual ceiling. Any excess is taxable income subject to BIR withholding.
+              Update this whenever the government amends the exemption amount so the system stays compliant.
+              All existing tables below are also editable and persist across sessions.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">⚙️ Configurable Bonus Types</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Define additional bonus structures that can be applied to future payroll cycles. Mark a bonus as <strong>🌿 De Minimis</strong> (BIR RR 11-2018) to make it tax-exempt, excluded from the ₱90,000 exemption pool, and exempt from SSS/PhilHealth/Pag-IBIG.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openBonusTypeModal()" style="display:flex;align-items:center;gap:6px">+ Add Bonus Type</button>
+          </div>
+          <div class="card-body">
+            <div id="bonusTypeList" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+            <div id="bonusTypeEmpty" style="display:none;text-align:center;padding:40px;background:#FAFAFA;border:2px dashed #DDD;border-radius:14px">
+              <div style="font-size:40px;margin-bottom:12px">🎁</div>
+              <div style="font-weight:600;color:var(--text-muted);margin-bottom:6px">No bonus types configured</div>
+              <button class="btn btn-outline btn-sm" onclick="openBonusTypeModal()">+ Add First Bonus Type</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finance My Payslip Page -->
+      <div id="finMyPayslip" style="display:none">
+        <div class="pg-title">My Payslips</div>
+        <div class="pg-sub">View and download your personal payslip records.</div>
+        <div class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:16px">📄</span>
+              <div class="card-title">Payslip Records</div>
+            </div>
+            <select class="fi" style="width:110px" id="finPsYear" onchange="renderFinPayslipList()">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
+          <div style="padding:0">
+            <table>
+              <thead><tr><th>Period</th><th>Gross Pay</th><th>Deductions</th><th>Net Pay</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="finMyPayslipBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Finance Change Password -->
+      <div id="finChangePassword" style="display:none">
+        <div class="pg-title">Change Password</div>
+        <div class="pg-sub">Update your account password for security.</div>
+        <div class="card" style="max-width:520px;margin-top:4px">
+          <div class="card-body">
+            <div class="fg"><label class="fl">Current Password</label><input class="fi" type="password" placeholder="Enter current password"/></div>
+            <div class="fg"><label class="fl">New Password</label><input class="fi" type="password" placeholder="Enter new password"/></div>
+            <div class="fg"><label class="fl">Confirm New Password</label><input class="fi" type="password" placeholder="Re-enter new password"/></div>
+            <div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:10px 14px;font-size:12px;color:#6D4C00;margin-bottom:12px">
+              ⚠️ Password must be at least 8 characters long.
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <button class="btn btn-primary" onclick="showToast('✅','Password changed successfully!')">🔑 Update Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finance My Profile — Manage Personal Details -->
+      <div id="finMyProfile" style="display:none">
+        <div class="pg-title" style="display:flex;align-items:center;gap:10px">👥 Manage Personal Details</div>
+        <div class="pg-sub">Edit your contact and personal information</div>
+        <div class="card" style="max-width:600px;margin-top:16px">
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+              <div id="finProfAvatar" style="width:56px;height:56px;border-radius:50%;background:var(--maroon-dark);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">JC</div>
+              <div>
+                <div id="finProfName" style="font-weight:700;font-size:16px;color:var(--text)">John Cabigting</div>
+                <div id="finProfRole" style="font-size:12px;color:var(--text-muted)">Finance Officer</div>
+                <button class="btn btn-outline btn-sm profile-photo-button" style="margin-top:6px;padding:4px 12px;font-size:11px" onclick="chooseProfilePhoto()">Change photo</button>
+              </div>
+            </div>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">First Name</label><input class="fi" id="finProfFirst" value="John"/></div>
+              <div class="fg"><label class="fl">Last Name</label><input class="fi" id="finProfLast" value="Cabigting"/></div>
+            </div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" id="finProfEmail" value="finance@rcc.edu.ph"/></div>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">Phone</label><input class="fi" id="finProfPhone" value="(+63) 917-555-2048"/></div>
+              <div class="fg"><label class="fl">Department</label><input class="fi" id="finProfDept" value="Finance Office" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+            </div>
+            <div class="fg"><label class="fl">Address</label><input class="fi" id="finProfAddr" value="Brgy. San Nicolas, Angeles City, Pampanga"/></div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:16px 0"/>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">Emergency Contact</label><input class="fi" id="finProfEmergName" value="Maria Cabigting"/></div>
+              <div class="fg"><label class="fl">Emergency Phone</label><input class="fi" id="finProfEmergPhone" value="(+63) 920-555-1180"/></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px">
+              <button class="btn btn-outline" onclick="showFinPage('finDashboard',null)">Cancel</button>
+              <button class="btn btn-primary" onclick="showToast('✅','Profile updated successfully!')">💾 Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Finance Payroll Calculation -->
+      <div id="finPayroll" style="display:none">
+        <div class="pg-title">Payroll Calculation</div>
+        <div class="pg-sub">Compute gross pay, deductions, and net pay. Teaching Personnel are paid by hours worked × hourly rate; Non-Teaching Personnel receive a fixed monthly base with absences deducted using a 22-day divisor. Select <strong>December</strong> (or tick "Include 13th Month Pay") to add the statutory 13th month bonus per RA 8515.</div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-head">
+            <div class="card-title">💰 Payroll Calculator</div>
+            <div class="toolbar">
+              <select class="fi" id="payPeriod" style="width:160px" onchange="onPayPeriodChange()">
+                <option>December 2026</option><option>November 2026</option><option>October 2026</option><option>September 2026</option><option>August 2026</option><option>July 2026</option><option>June 2026</option><option>May 2026</option><option>April 2026</option><option>March 2026</option><option>February 2026</option><option>January 2026</option>
+              </select>
+              <label id="calc13thWrap" style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--maroon);font-weight:700;cursor:pointer">
+                <input type="checkbox" id="calc13th" onchange="computePayroll()" style="accent-color:var(--maroon);width:16px;height:16px;cursor:pointer"/>
+                <span id="calc13thLabel">🎁 Include 13th Month Pay</span>
+              </label>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="fg-row" style="margin-bottom:16px">
+              <div class="fg" style="grid-column:1 / -1">
+                <label class="fl">Payroll Group <span style="color:#888;font-weight:400">(step 1 — select level)</span></label>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px" id="calcTabs">
+                  <button class="btn btn-outline calc-tab active" data-group="Non-Teaching" onclick="showCalcTab('Non-Teaching')">Non-Teaching</button>
+                  <button class="btn btn-outline calc-tab" data-group="Elementary" onclick="showCalcTab('Elementary')">Elementary</button>
+                  <button class="btn btn-outline calc-tab" data-group="High School" onclick="showCalcTab('High School')">High School</button>
+                  <button class="btn btn-outline calc-tab" data-group="College / Graduate" onclick="showCalcTab('College / Graduate')">College / Graduate</button>
+                </div>
+              </div>
+              <div class="fg">
+                <label class="fl">Select Employee <span style="color:#888;font-weight:400">(step 2)</span></label>
+                <div class="combobox" id="calcEmpWrap">
+                  <div class="search-wrap"><span class="search-icon">🔍</span>
+                    <input class="search-inp" id="calcEmpSearch" placeholder="Type name to search..." autocomplete="off"
+                      oninput="onCalcEmpInput()" onfocus="openCalcEmpList()" onclick="openCalcEmpList()" onkeydown="onCalcEmpKey(event)"/>
+                    <button type="button" class="combobox-arrow" id="calcEmpToggle" onclick="toggleCalcEmpList(event)" aria-label="Show employee list">▼</button>
+                  </div>
+                  <input type="hidden" id="calcEmp"/>
+                  <div class="combobox-list" id="calcEmpList"></div>
+                </div>
+              </div>
+            </div>
+            <div class="fg-row" style="margin-bottom:16px">
+              <div class="fg" id="calcGrossLabel" style="grid-column:1 / -1">
+                <label class="fl" id="calcGrossFieldLabel">Monthly Base Salary (₱)</label>
+                <input class="fi" type="number" id="calcSalary" step="0.01" min="0" placeholder="0.00" oninput="computePayroll()"/>
+              </div>
+            </div>
+
+            <!-- Absences (Non-Teaching / Elementary only) + Cash Advance (all groups) -->
+            <div class="fg-row" style="margin-bottom:16px" id="calcAttRow">
+              <div class="fg" id="calcAttField"><label class="fl" id="calcAttLabel">Absences (days)</label><input class="fi" type="number" id="calcAtt" step="0.5" min="0" placeholder="0" oninput="computePayroll()"/></div>
+              <div class="fg" id="calcWorkDaysField">
+                <label class="fl" for="calcWorkDays">Work Days (absence divisor)</label>
+                <input class="fi" type="number" id="calcWorkDays" step="0.5" min="1" max="31" oninput="computePayroll()"/>
+                <div style="font-size:11.5px;color:var(--text-muted);margin-top:4px">Defaults to Formula Management. Changes apply to this payroll computation only.</div>
+                <div id="calcWorkDaysErr" role="status" style="display:none;font-size:12px;color:#C62828;margin-top:4px">Enter Work Days between 1 and 31.</div>
+              </div>
+              <div class="fg"><label class="fl">Cash Advance (₱)</label><input class="fi" type="number" id="calcCash" step="0.01" min="0" placeholder="0.00" oninput="computePayroll()"/></div>
+            </div>
+
+            <!-- EXPLANATION editor (High School / College + Graduate) -->
+            <div id="calcExplanationRow" style="display:none;margin-bottom:16px">
+              <div class="fg-row" style="margin-bottom:12px">
+                <div class="fg">
+                  <label class="fl" for="calcSchoolYear">Teaching Load School Year</label>
+                  <select class="fi" id="calcSchoolYear" onchange="onCalcTeachingTermChange()"></select>
+                </div>
+                <div class="fg">
+                  <label class="fl" for="calcSemester">Semester</label>
+                  <select class="fi" id="calcSemester" onchange="onCalcTeachingTermChange()">
+                    <option value="1st">1st Sem</option>
+                    <option value="2nd">2nd Sem</option>
+                    <option value="Summer">Summer</option>
+                  </select>
+                </div>
+              </div>
+              <div id="calcTeachingTermStatus" role="status" style="font-size:12px;color:var(--text-muted);margin-bottom:12px"></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px">
+                <div style="font-size:13px;font-weight:700;color:var(--maroon)">📝 Explanation — Subjects &amp; Hours Rendered</div>
+                <div style="display:flex;gap:8px">
+                  <button class="btn btn-outline btn-sm" onclick="addCalcSubject()">+ Add Subject</button>
+                  <button class="btn btn-outline btn-sm" onclick="addCalcIncrement()">+ Add Increment</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto">
+                <table style="width:100%;border-collapse:collapse;font-size:12px">
+                  <thead><tr style="background:var(--maroon-dark);color:#fff">
+                    <th style="padding:8px 6px;text-align:left">Subject</th>
+                    <th style="padding:8px 6px;text-align:left" title="Tag which level this subject is for (College / Graduate)">Level</th>
+                    <th style="padding:8px 6px;text-align:left">Dept</th>
+                    <th style="padding:8px 6px;text-align:left">Schedule Days</th>
+                    <th style="padding:8px 6px;text-align:left" id="calcQtyHdr">Qty (Hrs/Month)</th>
+                    <th style="padding:8px 6px;text-align:left" id="calcRateHdr">Rate (₱)</th>
+                    <th style="padding:8px 6px;text-align:left">Amount (₱)</th>
+                    <th style="padding:8px 6px;width:40px"></th>
+                  </tr></thead>
+                  <tbody id="calcSubjectBody"></tbody>
+                </table>
+              </div>
+              <div style="display:flex;gap:16px;align-items:center;margin-top:8px;flex-wrap:wrap">
+                <span style="font-size:13px;font-weight:600;color:var(--maroon-dark)">Total Qty: <span id="calcTotalQty">0</span></span>
+                <span style="font-size:13px;font-weight:600;color:var(--maroon-dark)">Gross from Subjects: ₱<span id="calcSubjGross">0.00</span></span>
+                <span style="font-size:12px;color:var(--text-muted)">Pay Note:</span>
+                <input class="fi" style="flex:1;min-width:200px;padding:6px 10px" id="calcPayNote" placeholder="e.g. Absent - Nov 4 - Applied ELC"/>
+              </div>
+            </div>
+
+            <div class="fg-row" style="margin-bottom:16px;display:none" id="calcCustomRow"></div>
+              <div id="calcEmpMeta" style="display:none;margin-bottom:16px;background:var(--gold-pale);border:1px solid var(--gold);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--maroon-dark)">
+              <strong id="calcMetaName"></strong> — <span id="calcMetaClass"></span> · Department: <span id="calcMetaDept"></span>
+              <div id="calcStatusBadge" style="display:none;margin-top:8px"></div>
+            </div>
+            <div id="leaveBreakdown" style="display:none;margin-bottom:16px;background:#F5F7FA;border:1px solid #E0E7EE;border-radius:10px;padding:12px 16px;font-size:13px"></div>
+            <div id="calcResult" style="display:none">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--maroon);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">📥 Earnings</div>
+                  <div id="calcEarnings"></div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">Gross Pay</span><span id="rBasic" style="font-weight:700;color:var(--maroon-dark)">₱0.00</span></div>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--maroon);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">📤 Deductions</div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">SSS</span><span id="rSSS" style="font-weight:600">₱0.00</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">PhilHealth</span><span id="rPhil" style="font-weight:600">₱0.00</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">Pag-IBIG</span><span id="rPag" style="font-weight:600">₱0.00</span></div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">BIR Withholding Tax</span><span id="rBIR" style="font-weight:600">₱0.00</span></div>
+                  <div id="r13TaxRow" style="display:none;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #F5F0EA;font-size:13px;background:#FFF8E1">
+                    <span style="color:#8D6E63">🧾 13th Month Excess Tax <span style="font-size:10.5px;color:#8D6E63">(taxable over the configured annual exemption — deducted from 13th Month Pay)</span></span>
+                    <span id="r13Tax" style="font-weight:700;color:#C62828">₱0.00</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #F5F0EA;font-size:13.5px"><span style="color:var(--text-muted)">Cash Advance</span><span id="rCash" style="font-weight:600;color:#C62828">₱0.00</span></div>
+                  <div id="rCustomRows"></div>
+                  <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:13.5px"><span style="color:var(--text-muted)">Total Deductions</span><span id="rTotDed" style="font-weight:700;color:#C62828">₱0.00</span></div>
+                </div>
+              </div>
+              <div class="ps-total" style="margin-top:16px">
+                <span class="ps-total-label">💵 NET PAY</span>
+                <span class="ps-total-value" id="rNetPay">₱0.00</span>
+              </div>
+              <div style="margin-top:16px;display:flex;gap:10px">
+                <button class="btn btn-primary" onclick="confirmPayroll()">✅ Confirm &amp; Generate Payslip</button>
+                <button class="btn btn-outline" onclick="computePayroll()">🔄 Recalculate</button>
+              </div>
+            </div>
+            <div id="calcEmpty" style="text-align:center;padding:32px;color:var(--text-muted)">
+              <div style="font-size:36px;margin-bottom:8px">💰</div>
+              <div>Select an employee, enter hours worked (Teaching) or absences (Non-Teaching), and any cash advance to begin computation.</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title" id="payrollSummaryTitle">📋 Payroll Summary — December 2026</div><button class="btn btn-outline btn-sm" onclick="renderPayrollSummary()">🔄 Refresh</button></div>
+          <div style="padding:0"><table><thead><tr><th>Employee</th><th>Type</th><th>Hrs / Abs</th><th>Gross Pay</th><th>Bonus</th><th>SSS</th><th>PhilHealth</th><th>Pag-IBIG</th><th>BIR</th><th>13th Tax</th><th>Cash Adv</th><th>Other</th><th>Net Pay</th><th>Status</th></tr></thead>
+          <tbody id="payrollSummaryBody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- Finance Reports -->
+      <!-- Reports Main Page -->
+      <div id="finReports" style="display:none">
+        <div class="pg-title">Reports</div>
+        <div class="pg-sub">Generate and export payroll and contribution reports.</div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px">
+          <div class="card" style="margin:0;cursor:pointer;transition:all 0.2s"
+            onclick="showFinPage('finPayrollReport', null)"
+            onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'"
+            onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:32px 24px">
+              <div style="width:64px;height:64px;margin:0 auto 14px;background:#FFF5F5;border-radius:16px;display:flex;align-items:center;justify-content:center">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#C62828"/>
+                  <rect x="13" y="14" width="6" height="14" rx="1.5" fill="#E57373"/>
+                  <rect x="22" y="8" width="6" height="20" rx="1.5" fill="#C62828"/>
+                  <path d="M4 18l7-7 7 4 8-9" stroke="#C62828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div style="font-size:15px;font-weight:700;color:var(--maroon-dark);margin-bottom:6px">Payroll Summary</div>
+              <div style="font-size:12px;color:var(--text-muted)">Total gross, deductions, and net pay per period</div>
+            </div>
+          </div>
+          <div class="card" style="margin:0;cursor:pointer;transition:all 0.2s"
+            onclick="showFinPage('finGovReport', null)"
+            onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'"
+            onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:32px 24px">
+              <div style="width:64px;height:64px;margin:0 auto 14px;background:#FFF8E1;border-radius:16px;display:flex;align-items:center;justify-content:center">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="12" r="8" fill="#C9A84C"/>
+                  <path d="M4 26c0-5 5.4-9 12-9s12 4 12 9" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/>
+                  <circle cx="24" cy="10" r="4" fill="#8B2E2E"/>
+                </svg>
+              </div>
+              <div style="font-size:15px;font-weight:700;color:var(--maroon-dark);margin-bottom:6px">Government Contribution</div>
+              <div style="font-size:12px;color:var(--text-muted)">SSS, PhilHealth, Pag-IBIG, and BIR remittances per period</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Government Contribution Report Page -->
+      <div id="finGovReport" style="display:none">
+        <div style="margin-bottom:16px">
+          <button onclick="showFinPage('finReports',null)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--maroon-dark);display:flex;align-items:center;gap:6px;padding:0">
+            ← Back to Reports
+          </button>
+        </div>
+        <div class="pg-title">Government Contribution Report</div>
+        <div class="pg-sub">Select a year and month to generate the contribution remittance report.</div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12" r="8" fill="#C9A84C"/></svg>
+              <div class="card-title">Select Period</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <label style="font-size:13px;color:var(--text-muted);font-weight:600">Year:</label>
+                <select class="fi" style="width:110px" id="govYear" onchange="onGovYearChange()">
+                  <option value="">— Select Year —</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <label style="font-size:13px;font-weight:600" id="govMonthLabel" style="color:#BBB">Month:</label>
+                <select class="fi" style="width:160px" id="govMonth" disabled onchange="onGovMonthChange()">
+                  <option value="">— Select Month —</option>
+                  <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                  <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                  <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                  <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="govReportOutput" style="display:none">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12" r="8" fill="#C9A84C"/></svg>
+              <div class="card-title" id="govReportTitle">Government Contribution Report</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-primary btn-sm" onclick="exportReport('government')">📥 Export CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="printReport('government')">PDF / Print</button>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('govReportOutput').style.display='none'">✕</button>
+            </div>
+          </div>
+          <div style="padding:0">
+            <div id="govEmpty" style="display:none;text-align:center;padding:40px;color:var(--text-muted)">
+              <div style="font-size:40px;margin-bottom:12px">📭</div>
+              <div style="font-weight:600;margin-bottom:6px">No records found</div>
+              <div style="font-size:13px">No confirmed payroll records available for this period.</div>
+            </div>
+            <table>
+              <thead id="govHead"></thead>
+              <tbody id="govBody"></tbody>
+            </table>
+          </div>
+          <div class="card-body" style="border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)" id="govTotals"></div>
+        </div>
+      </div>
+
+      <!-- Payroll Summary Report Page -->
+      <div id="finPayrollReport" style="display:none">
+
+        <!-- Back button -->
+        <div style="margin-bottom:16px">
+          <button onclick="showFinPage('finReports',null)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--maroon-dark);display:flex;align-items:center;gap:6px;padding:0">
+            ← Back to Reports
+          </button>
+        </div>
+
+        <div class="pg-title">Payroll Summary Report</div>
+        <div class="pg-sub">Select a year and month to generate the payroll report.</div>
+
+        <!-- Combined Year + Month Selector Card -->
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#C62828"/>
+                <rect x="13" y="14" width="6" height="14" rx="1.5" fill="#E57373"/>
+                <rect x="22" y="8" width="6" height="20" rx="1.5" fill="#C62828"/>
+              </svg>
+              <div class="card-title">Select Period</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:16px">
+              <!-- Year Dropdown -->
+              <div style="display:flex;align-items:center;gap:8px">
+                <label style="font-size:13px;color:var(--text-muted);font-weight:600">Year:</label>
+                <select class="fi" style="width:110px" id="rptYear" onchange="onYearChange()">
+                  <option value="">— Select Year —</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                </select>
+              </div>
+              <!-- Month Dropdown — disabled until year is selected -->
+              <div style="display:flex;align-items:center;gap:8px">
+                <label style="font-size:13px;font-weight:600;transition:color 0.2s" id="rptMonthLabel" style="color:#BBB">Month:</label>
+                <select class="fi" style="width:160px;transition:opacity 0.2s" id="rptMonth" disabled onchange="onMonthChange()">
+                  <option value="">— Select Month —</option>
+                  <option value="0">📅 Full Year</option>
+                  <option value="1">January</option>
+                  <option value="2">February</option>
+                  <option value="3">March</option>
+                  <option value="4">April</option>
+                  <option value="5">May</option>
+                  <option value="6">June</option>
+                  <option value="7">July</option>
+                  <option value="8">August</option>
+                  <option value="9">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Table Output -->
+        <div class="card" id="reportOutput" style="display:none">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                <rect x="4" y="20" width="6" height="8" rx="1.5" fill="#C62828"/>
+                <rect x="13" y="14" width="6" height="14" rx="1.5" fill="#E57373"/>
+                <rect x="22" y="8" width="6" height="20" rx="1.5" fill="#C62828"/>
+              </svg>
+              <div class="card-title" id="reportTitle">Payroll Summary Report</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-primary btn-sm" onclick="exportReport('payroll')">📥 Export CSV</button>
+              <button class="btn btn-outline btn-sm" onclick="printReport('payroll')">PDF / Print</button>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('reportOutput').style.display='none'">✕</button>
+            </div>
+          </div>
+          <div style="padding:0">
+            <table>
+              <thead id="rptHead"></thead>
+              <tbody id="rptBody"></tbody>
+            </table>
+            <div id="rptEmpty" style="display:none;text-align:center;padding:40px;color:var(--text-muted)">
+              <div style="font-size:40px;margin-bottom:12px">📭</div>
+              <div style="font-weight:600;margin-bottom:6px">No records found</div>
+              <div style="font-size:13px">No payroll records available for this period.</div>
+            </div>
+          </div>
+          <div class="card-body" style="border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)" id="rptTotals"></div>
+        </div>
+      </div>
+
+      <!-- Finance Deduction Tables — Main Page -->
+      <div id="finDeduction" style="display:none">
+        <div class="pg-title">Deduction Tables</div>
+        <div class="pg-sub">Select a government agency to view and update its contribution rates. Changes apply to the next payroll processing cycle.</div>
+
+        <!-- Status bar -->
+        <div style="background:linear-gradient(135deg,var(--maroon-dark),var(--maroon));border-radius:14px;padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="font-size:28px">📋</div>
+            <div>
+              <div style="color:#fff;font-weight:700;font-size:15px">Government Contribution Rates — 2026</div>
+              <div style="color:rgba(255,255,255,0.7);font-size:12px" id="dedBannerSub">SSS • PhilHealth • Pag-IBIG • BIR TRAIN Law — Last verified: May 2026</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 16px;color:#fff;font-size:12px;font-weight:600">✅ All rates up to date</div>
+        </div>
+
+        <!-- 4 Agency Cards — Text Only -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+          <!-- SSS -->
+          <div class="card" onclick="showDedPage('SSS')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:40px 32px">
+              <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark);margin-bottom:8px">SSS</div>
+              <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px">Social Security System</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:24px">Republic Act No. 11199 • 60 salary brackets</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;background:var(--maroon-dark);color:#fff;padding:11px 28px;border-radius:10px;font-size:13px;font-weight:600">
+                View Table <span>→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PhilHealth -->
+          <div class="card" onclick="showDedPage('PhilHealth')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:40px 32px">
+              <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark);margin-bottom:8px">PhilHealth</div>
+              <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px">Philippine Health Insurance Corp.</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:24px">Republic Act No. 11223 • 5% premium rate</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;background:var(--maroon-dark);color:#fff;padding:11px 28px;border-radius:10px;font-size:13px;font-weight:600">
+                View Table <span>→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pag-IBIG -->
+          <div class="card" onclick="showDedPage('PagIBIG')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:40px 32px">
+              <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark);margin-bottom:8px">Pag-IBIG Fund</div>
+              <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px">Home Development Mutual Fund</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:24px">Republic Act No. 9679 • Max ₱100/month</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;background:var(--maroon-dark);color:#fff;padding:11px 28px;border-radius:10px;font-size:13px;font-weight:600">
+                View Table <span>→</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BIR -->
+          <div class="card" onclick="showDedPage('BIR')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div class="card-body" style="text-align:center;padding:40px 32px">
+              <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark);margin-bottom:8px">BIR</div>
+              <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px">Bureau of Internal Revenue</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:24px">TRAIN Law • RA 10963 • 6 tax brackets</div>
+              <div style="display:inline-flex;align-items:center;gap:8px;background:var(--maroon-dark);color:#fff;padding:11px 28px;border-radius:10px;font-size:13px;font-weight:600">
+                View Table <span>→</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Payroll Basis — Absence Divisor -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">🧮 Payroll Basis — Working Days per Month</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Divisor used to price one absence day for monthly-paid (Non-Teaching) staff</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+              <div class="fg" style="min-width:220px">
+                <label class="fl">Working Days per Month</label>
+                <input class="fi" type="number" step="0.5" min="1" max="31" id="workDaysInput" value="22"/>
+              </div>
+              <button class="btn btn-primary" onclick="saveWorkDays()">💾 Save</button>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:var(--text-muted);line-height:1.6">
+              Formula: Gross = Monthly Salary − (Absences ÷ <span id="workDaysFormula">22</span> × Monthly Salary).
+              The standard convention is <strong>22 working days per month</strong> — a fixed divisor keeps the daily absence value consistent across all months, since actual Mon–Fri days vary (20–23) and holidays remain paid for monthly-rate employees.
+              Teaching staff are paid hourly and are not affected by this setting.
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Note -->
+        <div style="margin-top:20px;background:#EFF8FF;border:1px solid #B3D9FF;border-radius:12px;padding:16px 20px;display:flex;gap:12px;align-items:flex-start">
+          <div style="font-size:20px">ℹ️</div>
+          <div style="font-size:13px;color:#1A4A7A;line-height:1.7">
+            <strong>Important Reminder:</strong> Government contribution rates are subject to change. Always verify current rates with the official SSS, PhilHealth, Pag-IBIG, and BIR portals before processing payroll. Quarterly audits are recommended.
+          </div>
+        </div>
+
+        <!-- Custom Deduction Categories -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-body" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+            <div>
+              <div class="card-title">PERAA Retirement Contribution</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Private Education Retirement Annuity Association. Set the employee contribution as a fixed amount or percentage of gross pay. Initial amount: ₱0.</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Active deductions apply to all employees by default. Enter 0 in the Payroll Calculator for an employee who does not contribute.</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="openPeraaDeduction()">Configure PERAA</button>
+          </div>
+        </div>
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Other Deduction Categories</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Custom deductions applied on top of mandatory government contributions — Active categories are deducted from every payroll run and shown on payslips</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddDeductionCategory()" style="display:flex;align-items:center;gap:6px">
+              + Add Category
+            </button>
+          </div>
+          <div class="card-body">
+            <!-- Category cards -->
+            <div id="deductionCategoryList" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+            <!-- Empty state -->
+            <div id="deductionCategoryEmpty" style="display:none;text-align:center;padding:40px;background:#FAFAFA;border:2px dashed #DDD;border-radius:14px">
+              <div style="font-size:40px;margin-bottom:12px">📂</div>
+              <div style="font-weight:600;color:var(--text-muted);margin-bottom:6px">No custom deduction categories yet</div>
+              <div style="font-size:13px;color:#AAA;margin-bottom:16px">Add a new deduction category to get started.</div>
+              <button class="btn btn-outline btn-sm" onclick="openAddDeductionCategory()">+ Add First Category</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Types Configuration -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">📅 Leave Types Configuration</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Configure which leave types are paid or unpaid. Paid leaves do not reduce gross pay; unpaid leaves are deducted. New leave types from HRIS are auto-added as unpaid by default.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddLeaveType()" style="display:flex;align-items:center;gap:6px">
+              + Add Leave Type
+            </button>
+          </div>
+          <div class="card-body">
+            <div id="leaveTypeList" style="display:grid;grid-template-columns:1fr 1fr;gap:16px"></div>
+            <div id="leaveTypeEmpty" style="display:none;text-align:center;padding:40px;background:#FAFAFA;border:2px dashed #DDD;border-radius:14px">
+              <div style="font-size:40px;margin-bottom:12px">📅</div>
+              <div style="font-weight:600;color:var(--text-muted);margin-bottom:6px">No leave types configured</div>
+              <div style="font-size:13px;color:#AAA;margin-bottom:16px">Add leave types to configure paid/unpaid status.</div>
+              <button class="btn btn-outline btn-sm" onclick="openAddLeaveType()">+ Add First Leave Type</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Records -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">📋 Leave Records</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Assign leave (with dates) to employees. These appear automatically in the Payroll Calculator's Leave Breakdown and are added to absences. Records imported from the HRIS sync also appear here and are never duplicated.</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openAddLeaveRecord()" style="display:flex;align-items:center;gap:6px">
+              + Add Leave Record
+            </button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--maroon-dark)">Filter:</div>
+              <div class="combobox" id="leaveRecEmpWrap" style="min-width:280px">
+                <div class="search-wrap"><span class="search-icon">🔍</span>
+                  <input class="search-inp" id="leaveRecEmpSearch" placeholder="All Employees" autocomplete="off"
+                    oninput="onLeaveRecEmpInput()" onfocus="openLeaveRecEmpList()" onclick="openLeaveRecEmpList()" onkeydown="onLeaveRecEmpKey(event)"/>
+                  <button type="button" class="combobox-arrow" onclick="toggleLeaveRecEmpList(event)" aria-label="Show employee list">▼</button>
+                </div>
+                <input type="hidden" id="leaveRecEmp"/>
+                <div class="combobox-list" id="leaveRecEmpList"></div>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>Employee</th><th>Leave Type</th><th>Dates</th><th>Days</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="leaveRecordList"></tbody>
+            </table>
+            <div id="leaveRecordEmpty" style="display:none;text-align:center;padding:40px;background:#FAFAFA;border:2px dashed #DDD;border-radius:14px;margin:16px">
+              <div style="font-size:40px;margin-bottom:12px">📋</div>
+              <div style="font-weight:600;color:var(--text-muted);margin-bottom:6px">No leave records yet</div>
+              <div style="font-size:13px;color:#AAA;margin-bottom:16px">Add a leave record so its breakdown appears in the Payroll Calculator.</div>
+              <button class="btn btn-outline btn-sm" onclick="openAddLeaveRecord()">+ Add First Leave Record</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendance (imported from HRIS) -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">🕒 Attendance (clock-in / clock-out)</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Daily clock-in/out imported from the HRIS sync. Absence is auto-detected: a workday with no clock-in and no approved leave is counted as absent (unpaid, 8 hours = 1 day). Hours worked for Teaching staff is computed from these records.</div>
+            </div>
+            <button class="btn btn-outline" id="hrisAttSyncBtn" onclick="syncFromHris()" style="display:flex;align-items:center;gap:6px">🔄 Import from HRIS</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+              <div style="font-size:13px;font-weight:600;color:var(--maroon-dark)">Filter:</div>
+              <div class="combobox" id="attEmpWrap" style="min-width:280px">
+                <div class="search-wrap"><span class="search-icon">🔍</span>
+                  <input class="search-inp" id="attEmpSearch" placeholder="All Employees" autocomplete="off"
+                    oninput="onAttEmpInput()" onfocus="openAttEmpList()" onclick="openAttEmpList()" onkeydown="onAttEmpKey(event)"/>
+                  <button type="button" class="combobox-arrow" onclick="toggleAttEmpList(event)" aria-label="Show employee list">▼</button>
+                </div>
+                <input type="hidden" id="attEmp"/>
+                <div class="combobox-list" id="attEmpList"></div>
+              </div>
+            </div>
+            <table>
+              <thead><tr><th>Employee</th><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Hours</th></tr></thead>
+              <tbody id="attendanceList"></tbody>
+            </table>
+            <div id="attendanceEmpty" style="display:none;text-align:center;padding:40px;background:#FAFAFA;border:2px dashed #DDD;border-radius:14px;margin:16px">
+              <div style="font-size:40px;margin-bottom:12px">🕒</div>
+              <div style="font-weight:600;color:var(--text-muted);margin-bottom:6px">No attendance records yet</div>
+              <div style="font-size:13px;color:#AAA;margin-bottom:16px">Import clock-in/out from the HRIS to enable absence and hours auto-detection.</div>
+              <button class="btn btn-outline btn-sm" onclick="syncFromHris()">🔄 Import Attendance from HRIS</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SSS Detail Page -->
+      <div id="finDedSSS" style="display:none">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <button onclick="showDedMain()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--maroon-dark);font-weight:600;display:flex;align-items:center;gap:6px">← Back to Deduction Tables</button>
+        </div>
+        <div class="pg-title" style="display:flex;align-items:center;gap:12px">🏛️ SSS Contribution Table</div>
+        <div class="pg-sub">Republic Act No. 11199 • Effective Jan 2025 • 5% Employee + 10% Employer = 15% of MSC</div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Monthly Salary Credit Contribution Table</div>
+              <div style="font-size:12px;color:var(--text-muted)">19 salary brackets — Employee + Employer shares</div>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="openDedModal('SSS')">✏️ Edit All Brackets</button>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Monthly Salary Credit Range</th><th>Employee Share</th><th>Employer Share</th><th>Total Contribution</th></tr></thead>
+            <tbody id="sssTableBody">
+            </tbody>
+          </table>
+          <div style="padding:10px 16px;background:#F9F7F4;border-top:1px solid #EEE8E0;font-size:12px;color:var(--text-muted)">
+            <strong>Note (2026):</strong> Minimum MSC: ₱5,000. Maximum MSC: ₱35,000. Rate: 15% total (5% Employee + 10% Employer). Source: SSS Circular 2024-006, effective January 2025.
+          </div>
+        </div>
+        <div style="margin-top:16px;background:#EFF8FF;border:1px solid #B3D9FF;border-radius:12px;padding:16px 20px;display:flex;gap:12px">
+          <div style="font-size:20px">ℹ️</div>
+          <div style="font-size:13px;color:#1A4A7A;line-height:1.7">Always verify SSS contribution tables with the official SSS portal at <strong>www.sss.gov.ph</strong> before each payroll cycle.</div>
+        </div>
+      </div>
+
+      <!-- PhilHealth Detail Page -->
+      <div id="finDedPhilHealth" style="display:none">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <button onclick="showDedMain()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--maroon-dark);font-weight:600">← Back to Deduction Tables</button>
+        </div>
+        <div class="pg-title">🏥 PhilHealth Premium Contribution</div>
+        <div class="pg-sub">Republic Act No. 11223 • Universal Health Care Act • 2026 Premium Rate</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">Current Premium Rate</div>
+              <button class="btn btn-outline btn-sm" onclick="openDedModal('PhilHealth')">✏️ Edit Rates</button>
+            </div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+                <div style="background:var(--maroon-dark);border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:4px">Total Rate</div>
+                  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff" id="philRateDisplay">5.00%</div>
+                </div>
+                <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Employee Share</div>
+                  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark)" id="philEmpDisplay">2.50%</div>
+                </div>
+                <div style="background:var(--gold-pale);border:1px solid var(--gold);border-radius:10px;padding:14px;text-align:center">
+                  <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Employer Share</div>
+                  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--maroon-dark)" id="philErDisplay">2.50%</div>
+                </div>
+              </div>
+              <table>
+                <thead><tr><th>Category</th><th>Amount</th></tr></thead>
+                <tbody>
+                  <tr><td>Minimum Monthly Premium</td><td><strong id="philMinDisplay">₱500.00</strong></td></tr>
+                  <tr><td>Maximum Monthly Premium</td><td><strong id="philMaxDisplay">₱5,000.00</strong></td></tr>
+                  <tr><td>Salary Floor (Min Base)</td><td><strong id="philFloorDisplay">₱10,000.00</strong></td></tr>
+                  <tr><td>Salary Ceiling (Max Base)</td><td><strong id="philCeilDisplay">₱100,000.00</strong></td></tr>
+                </tbody>
+              </table>
+              <div style="padding:10px 16px;background:#F9F7F4;border-top:1px solid #EEE8E0;font-size:12px;color:var(--text-muted)" id="philFormulaText">
+                <strong>Formula:</strong> Basic Monthly Salary × 5% ÷ 2 = Employee Share
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Computation Example</div></div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Monthly Salary</th><th>Employee Share</th></tr></thead>
+                <tbody id="philExampleBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pag-IBIG Detail Page -->
+      <div id="finDedPagIBIG" style="display:none">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <button onclick="showDedMain()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--maroon-dark);font-weight:600">← Back to Deduction Tables</button>
+        </div>
+        <div class="pg-title">🏠 Pag-IBIG Fund (HDMF)</div>
+        <div class="pg-sub">Republic Act No. 9679 • Home Development Mutual Fund • Maximum ₱100/month employee share</div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-head">
+            <div class="card-title">Contribution Rate Table</div>
+            <button class="btn btn-outline btn-sm" onclick="openDedModal('PagIBIG')">✏️ Edit Rates</button>
+          </div>
+          <table>
+            <thead><tr><th>Monthly Compensation</th><th>Employee Rate</th><th>Max Employee Share</th></tr></thead>
+            <tbody id="pagTableBody">
+            </tbody>
+          </table>
+          <div style="padding:12px 16px;background:#F9F7F4;font-size:12px;color:var(--text-muted)">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #EEE8E0"><span>Max Employee Contribution</span><span><strong id="pagFootEmpMax">₱100.00 / month</strong></span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #EEE8E0"><span>Max Employer Contribution</span><span><strong id="pagFootErMax">₱100.00 / month</strong></span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span>Employer Share</span><span>Mirrors the employee rate per RA 9679 — not deducted from payroll</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIR Detail Page -->
+      <div id="finDedBIR" style="display:none">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <button onclick="showDedMain()" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--maroon-dark);font-weight:600">← Back to Deduction Tables</button>
+        </div>
+        <div class="pg-title">📋 BIR Withholding Tax</div>
+        <div class="pg-sub">TRAIN Law • Republic Act No. 10963 • Annual Income Tax Schedule</div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-head">
+            <div class="card-title">Annual Income Tax Bracket Table</div>
+            <button class="btn btn-outline btn-sm" onclick="openDedModal('BIR')">✏️ Edit Brackets</button>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Annual Taxable Income</th><th>Base Tax</th><th>Rate on Excess</th><th>Excess Over</th></tr></thead>
+            <tbody id="birTableBody">
+            </tbody>
+          </table>
+          <div style="padding:10px 16px;background:#F9F7F4;border-top:1px solid #EEE8E0;font-size:12px;color:var(--text-muted)">
+            <strong>Method:</strong> Annualize monthly salary × 12 → apply bracket → annual tax ÷ 12 = monthly BIR deduction.
+          </div>
+        </div>
+        <div style="margin-top:16px;background:#FFF8E1;border:1px solid #FFD54F;border-radius:12px;padding:16px 20px;display:flex;gap:12px">
+          <div style="font-size:20px">⚠️</div>
+          <div style="font-size:13px;color:#6D4C00;line-height:1.7">BIR tax tables are mandated by law. Only update when the BIR officially issues a new TRAIN Law amendment or Revenue Regulation. Verify at <strong>www.bir.gov.ph</strong>.</div>
+        </div>
+      </div>
+
+      <!-- Finance Payslip Detail -->
+      <div id="finPayslipDetail" style="display:none">
+        <div style="margin-bottom:16px">
+          <button onclick="document.getElementById('finPayslipDetail').style.display='none';showFinPage('finMyPayslip',null)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--maroon-dark);padding:0">← Back to My Payslips</button>
+        </div>
+        <div class="ps-viewer">
+          <div class="card" style="padding:0">
+            <div id="finPsDoc" class="ps-document"></div>
+            <div style="padding:0 48px 32px;display:flex;justify-content:center">
+              <button class="btn btn-primary" onclick="printPayslip()" style="padding:12px 32px;display:flex;align-items:center;gap:8px">📥 Download PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faculty Rank Tables -->
+      <div id="finRanks" style="display:none">
+        <div class="pg-title">🎓 Faculty Rank Tables</div>
+        <div class="pg-sub">Hourly pay rates for teaching faculty, organized by department. Changes apply to the next payroll processing cycle.</div>
+
+        <div style="display:flex;gap:8px;margin:20px 0;flex-wrap:wrap">
+          <button class="btn btn-outline rank-tab active" data-dept="College" onclick="showRankTab('College')">College</button>
+          <button class="btn btn-outline rank-tab" data-dept="Elementary" onclick="showRankTab('Elementary')">Elementary</button>
+          <button class="btn btn-outline rank-tab" data-dept="High School" onclick="showRankTab('High School')">High School</button>
+          <button class="btn btn-outline rank-tab" data-dept="Graduate School" onclick="showRankTab('Graduate School')">Graduate School</button>
+          <button class="btn btn-primary" style="margin-left:auto" onclick="openRankEditModal()">✏️ Edit Ranks</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Faculty Ranks &amp; Hourly Rates</div>
+              <div style="font-size:12px;color:var(--text-muted)">Select a department tab to view its rank table</div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Rank</th><th id="finRankRateHdr">Rate</th><th>Department</th></tr></thead>
+            <tbody id="rankTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Finance: Teaching Loads (view/edit all faculty) -->
+      <div id="finTeachingLoad" style="display:none">
+        <div class="pg-title">📚 Teaching Loads</div>
+        <div class="pg-sub">Review and edit teaching load records submitted by employees. Basis for payroll computation.</div>
+        <div id="finTeachingLoadContent"></div>
+        <div id="finTlFormHost" style="max-width:1100px;margin:16px auto 0"></div>
+      </div>
+
+      <!-- Finance: Formula Management (payroll computation formulas) -->
+      <div id="finFormula" style="display:none">
+        <div class="pg-title">🧮 Formula Management</div>
+        <div class="pg-sub">Payroll computation formulas per school level and their global parameters.</div>
+        <div id="finFormulaContent"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SYSTEM ADMIN DASHBOARD
+════════════════════════════════════════════════════════════ -->
+<div class="dashboard-page" id="adminPage">
+  <aside class="sidebar">
+    <div class="sb-logo" style="padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.08)">
+      <img src="assets/RCC_LOGO.png" alt="RCC Logo" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(201,168,76,0.5);background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.25)"/>
+      <div><div class="sys" style="font-size:14px;font-weight:700;color:#fff">RCC-APS</div><div class="sub" style="font-size:11px;color:rgba(255,255,255,0.6)">Payroll System</div></div>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">Main Menu</div>
+      <button class="nav-item active" onclick="showAdmPage('admDashboard',this)"><span class="nav-icon">🏠</span> Dashboard</button>
+      <button class="nav-item" onclick="showAdmPage('admUsers',this)"><span class="nav-icon">👥</span> User Management</button>
+      <button class="nav-item" onclick="showAdmPage('admRanks',this)"><span class="nav-icon">🎓</span> Faculty Rank Tables</button>
+      <button class="nav-item" onclick="showAdmPage('admDeduction',this)"><span class="nav-icon">⚙️</span> Deduction Tables</button>
+    </div>
+    <div class="nav-sec">
+      <div class="nav-lbl">My Employee Info</div>
+      <button class="nav-item" onclick="showAdmPage('admMyPayslip',this)"><span class="nav-icon">📄</span> My Payslip</button>
+      <button class="nav-item" onclick="showAdmPage('admMyProfile',this)"><span class="nav-icon">👤</span> My Profile</button>
+      <button class="nav-item" onclick="showAdmPage('admChangePassword',this)"><span class="nav-icon">🔑</span> Change Password</button>
+    </div>
+    <div class="sb-footer"><button class="logout-btn" onclick="logout()"><span>🚪</span> Log Out</button></div>
+  </aside>
+  <div class="dash-main">
+    <div class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar('adminPage')" aria-label="Open menu">☰</button>
+      <div class="tb-right">
+        <div style="display:flex;align-items:center;gap:8px;background:#F5F0E8;border:1px solid #E0D0B8;border-radius:8px;padding:6px 14px;font-size:13px;color:#666">
+          📅 <span id="admDateDisplay">May 03, 2026</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><div class="tb-avatar" id="admAvatar" style="background:#880E4F">NV</div><div><div class="tb-name" id="admTbName">Nash Valencia</div><div class="tb-role">System Admin</div></div></div>
+      </div>
+    </div>
+    <div class="dash-content">
+
+      <!-- Admin Dashboard -->
+      <div id="admDashboard">
+        <div style="background:linear-gradient(135deg,#6B1A1A,#4A0E0E);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border-radius:20px;padding:4px 14px;font-size:12px;color:rgba(255,255,255,0.9);font-weight:600;margin-bottom:12px">System Admin</div>
+            <div id="admHeroName" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:6px">Good Morning, Nash! 👋</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.65)">System is running normally. All services are active.</div>
+          </div>
+          <div style="display:flex;gap:32px">
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff" id="admTot">8</div><div style="font-size:12px;color:rgba(255,255,255,0.65)">Total Users</div></div>
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff" id="admAct">6</div><div style="font-size:12px;color:rgba(255,255,255,0.65)">Active</div></div>
+            <div style="text-align:center"><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#fff" id="admInact">2</div><div style="font-size:12px;color:rgba(255,255,255,0.65)">Inactive</div></div>
+          </div>
+        </div>
+        <div class="stats-grid s4" style="margin-bottom:24px">
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#F0F4FF;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" fill="#4A90D9"/><path d="M2 20c0-4 3.6-7 7-7h0c3.4 0 7 3 7 7" stroke="#4A90D9" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="9" r="3" fill="#85B8E8"/><path d="M14 20c0-3 2.7-5 5-5" stroke="#85B8E8" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-val" id="admTotStat">8</div>
+            <div class="stat-lbl">Total Users</div>
+            <div class="stat-note" id="admBreakdown">1 Admin · 2 Finance · 5 Emp</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#E8F5E9;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#27AE60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="stat-val" id="admActStat">6</div>
+            <div class="stat-lbl">Active Accounts</div>
+            <div class="stat-note">All logged in this month</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#F5F5F5;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" rx="2" fill="#888"/><rect x="14" y="4" width="4" height="16" rx="2" fill="#888"/></svg>
+            </div>
+            <div class="stat-val" id="admInactStat">2</div>
+            <div class="stat-lbl">Inactive Accounts</div>
+            <div class="stat-note">Access suspended</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#FCE4EC;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="#C62828" stroke-width="2"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#C62828" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-val" id="admNew">2</div>
+            <div class="stat-lbl">New This Month</div>
+            <div class="stat-note">Recently added</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+          <div class="card" style="width:100%">
+            <div class="card-head">
+              <div style="display:flex;align-items:center;gap:8px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" fill="#4A90D9"/><path d="M2 20c0-4 3.6-7 7-7h0c3.4 0 7 3 7 7" stroke="#4A90D9" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="9" r="3" fill="#85B8E8"/></svg>
+                <div class="card-title">Recent User Activity</div>
+              </div>
+              <button class="btn btn-outline btn-sm" onclick="showAdmPage('admUsers',null)">Manage All</button>
+            </div>
+            <div style="padding:0">
+              <table>
+                <thead><tr><th>USER</th><th>ROLE</th><th>LAST LOGIN</th><th>STATUS</th></tr></thead>
+                <tbody id="admRecentUsers"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Admin User Management (M2) -->
+      <div id="admUsers" style="display:none">
+        <div class="pg-title">User Management</div>
+        <div class="pg-sub">Create, edit, deactivate, and manage all system user accounts.</div>
+        <div class="stats-grid s4" style="margin-bottom:24px">
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#FFF0F0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="8" cy="8" r="4" fill="#C62828"/><path d="M2 20c0-3.3 2.7-6 6-6h0" stroke="#C62828" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="16" r="5" fill="none" stroke="#C62828" stroke-width="2"/><path d="M14 16h4M16 14v4" stroke="#C62828" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-val" id="u-admin">0</div>
+            <div class="stat-lbl">System Admins</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#FFF8E8;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" fill="#C9A84C" opacity="0.2"/><rect x="2" y="7" width="20" height="14" rx="2" stroke="#C9A84C" stroke-width="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#C9A84C" stroke-width="2"/><path d="M12 12v4M10 14h4" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-val" id="u-finance">0</div>
+            <div class="stat-lbl">Finance Officers</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#EBF5FF;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" fill="#4A90D9"/><path d="M2 20c0-4 3.6-7 7-7h0c3.4 0 7 3 7 7" stroke="#4A90D9" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="9" r="3" fill="#85B8E8"/><path d="M14 20c0-3 2.7-5 5-5" stroke="#85B8E8" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-val" id="u-employee">0</div>
+            <div class="stat-lbl">Employees</div>
+          </div>
+          <div class="stat-card">
+            <div style="width:48px;height:48px;background:#F5F5F5;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="6" y="4" width="4" height="16" rx="2" fill="#888"/><rect x="14" y="4" width="4" height="16" rx="2" fill="#888"/></svg>
+            </div>
+            <div class="stat-val" id="u-inactive">0</div>
+            <div class="stat-lbl">Inactive</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">👥 All Users</div>
+            <div class="toolbar">
+              <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-inp" id="uSearch" placeholder="Search name or email..." oninput="renderUserTable()"/></div>
+              <select class="fi" id="uRoleFilter" style="width:150px" onchange="renderUserTable()"><option value="">All Roles</option><option>System Admin</option><option>Finance Officer</option><option>Employee</option></select>
+              <select class="fi" id="uStatusFilter" style="width:130px" onchange="renderUserTable()"><option value="">All Status</option><option>Active</option><option>Inactive</option></select>
+              <button class="btn btn-primary" onclick="openAddUserModal()">➕ Add User</button>
+              <button class="btn btn-outline" id="hrisSyncBtn" onclick="syncFromHris()">🔄 Sync from HRIS</button>
+            </div>
+          </div>
+          <div style="padding:0">
+            <table><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Date Added</th><th>Actions</th></tr></thead>
+            <tbody id="userTableBody"></tbody></table>
+            <div id="uEmpty" class="empty-state" style="display:none"><div class="empty-icon">🔍</div><div class="empty-title">No users found</div><div>Adjust your search or filters.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Deduction Tables (read-only view same as Finance) -->
+      <div id="admDeduction" style="display:none">
+        <div class="pg-title">Deduction Tables</div>
+        <div class="pg-sub">View SSS, PhilHealth, Pag-IBIG, and BIR contribution rate tables.</div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">ℹ️ Note</div></div>
+          <div class="card-body" style="background:var(--gold-pale);border-radius:8px">
+            <div style="font-size:13px;color:var(--maroon)">As a System Admin, you can view deduction tables. Updates to rates must be made by the Finance Officer. Contact your Finance Officer to update contribution rates.</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">🏛️ SSS Contribution</div></div>
+            <div style="padding:0;max-height:300px;overflow-y:auto"><table><thead><tr><th>Salary Range</th><th>Employee</th><th>Employer</th></tr></thead>
+            <tbody id="admSSSBody">
+            </tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">🏥 PhilHealth</div></div>
+            <div class="card-body">
+              <div style="background:var(--gold-pale);border-radius:10px;padding:16px;text-align:center">
+                <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Current Rate</div>
+                <div style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--maroon-dark)" id="admPhilRate">5.00%</div>
+                <div style="font-size:12px;color:var(--text-muted)" id="admPhilSplit">Split equally — 2.50% employee, 2.50% employer</div>
+              </div>
+            </div>
+          </div>
+          <!-- Pag-IBIG -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">🏠 Pag-IBIG Contribution</div></div>
+            <div style="padding:0"><table><thead><tr><th>Monthly Compensation</th><th>Employee Rate</th></tr></thead>
+            <tbody id="admPagBody">
+            </tbody></table></div>
+          </div>
+          <!-- BIR -->
+          <div class="card">
+            <div class="card-head"><div class="card-title">📋 BIR Withholding Tax (TRAIN Law)</div></div>
+            <div style="padding:0"><table><thead><tr><th>Annual Taxable Income</th><th>Tax Rate</th></tr></thead>
+            <tbody id="admBIRBody">
+            </tbody></table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin My Payslip Page -->
+      <div id="admMyPayslip" style="display:none">
+        <div class="pg-title">My Payslips</div>
+        <div class="pg-sub">View and download your personal payslip records.</div>
+        <div class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:16px">📄</span>
+              <div class="card-title">Payslip Records</div>
+            </div>
+            <select class="fi" style="width:110px" id="admPsYear" onchange="renderAdmPayslipList()">
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+            </select>
+          </div>
+          <div style="padding:0">
+            <table>
+              <thead><tr><th>Period</th><th>Gross Pay</th><th>Deductions</th><th>Net Pay</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="admMyPayslipBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Payslip Detail -->
+      <div id="admPayslipDetail" style="display:none">
+        <div style="margin-bottom:16px">
+          <button onclick="document.getElementById('admPayslipDetail').style.display='none';showAdmPage('admMyPayslip',null)" style="background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--maroon-dark);padding:0">← Back to My Payslips</button>
+        </div>
+        <div class="ps-viewer">
+          <div class="card" style="padding:0">
+            <div id="admPsDoc" class="ps-document"></div>
+            <div style="padding:0 48px 32px;display:flex;justify-content:center">
+              <button class="btn btn-primary" onclick="printPayslip()" style="padding:12px 32px;display:flex;align-items:center;gap:8px">📥 Download PDF</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin My Profile — Manage Personal Details -->
+      <div id="admMyProfile" style="display:none">
+        <div class="pg-title" style="display:flex;align-items:center;gap:10px">👥 Manage Personal Details</div>
+        <div class="pg-sub">Edit your contact and personal information</div>
+        <div class="card" style="max-width:600px;margin-top:16px">
+          <div class="card-body">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+              <div id="admProfAvatar" style="width:56px;height:56px;border-radius:50%;background:var(--maroon-dark);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">NV</div>
+              <div>
+                <div id="admProfName" style="font-weight:700;font-size:16px;color:var(--text)">Nash Valencia</div>
+                <div id="admProfRole" style="font-size:12px;color:var(--text-muted)">System Admin</div>
+                <button class="btn btn-outline btn-sm profile-photo-button" style="margin-top:6px;padding:4px 12px;font-size:11px" onclick="chooseProfilePhoto()">Change photo</button>
+              </div>
+            </div>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">First Name</label><input class="fi" id="admProfFirst" value="Nash"/></div>
+              <div class="fg"><label class="fl">Last Name</label><input class="fi" id="admProfLast" value="Valencia"/></div>
+            </div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" id="admProfEmail" value="admin@rcc.edu.ph"/></div>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">Phone</label><input class="fi" id="admProfPhone" value="(+63) 918-555-3076"/></div>
+              <div class="fg"><label class="fl">Department</label><input class="fi" id="admProfDept" value="IT Office" readonly style="background:var(--bg);color:var(--text-muted)"/></div>
+            </div>
+            <div class="fg"><label class="fl">Address</label><input class="fi" id="admProfAddr" value="Brgy. Sto. Rosario, Angeles City, Pampanga"/></div>
+            <hr style="border:none;border-top:1px solid var(--border);margin:16px 0"/>
+            <div class="fg-row">
+              <div class="fg"><label class="fl">Emergency Contact</label><input class="fi" id="admProfEmergName" value="Lourdes Valencia"/></div>
+              <div class="fg"><label class="fl">Emergency Phone</label><input class="fi" id="admProfEmergPhone" value="(+63) 921-555-4490"/></div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:8px">
+              <button class="btn btn-outline" onclick="showAdmPage('admDashboard',null)">Cancel</button>
+              <button class="btn btn-primary" onclick="showToast('✅','Profile updated successfully!')">💾 Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Change Password -->
+      <div id="admChangePassword" style="display:none">
+        <div class="pg-title">Change Password</div>
+        <div class="pg-sub">Update your account password for security.</div>
+        <div class="card" style="max-width:520px;margin-top:4px">
+          <div class="card-body">
+            <div class="fg"><label class="fl">Current Password</label><input class="fi" type="password" placeholder="Enter current password"/></div>
+            <div class="fg"><label class="fl">New Password</label><input class="fi" type="password" placeholder="Enter new password"/></div>
+            <div class="fg"><label class="fl">Confirm New Password</label><input class="fi" type="password" placeholder="Re-enter new password"/></div>
+            <div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:10px 14px;font-size:12px;color:#6D4C00;margin-bottom:12px">
+              ⚠️ Password must be at least 8 characters long.
+            </div>
+            <div style="display:flex;justify-content:flex-end">
+              <button class="btn btn-primary" onclick="showToast('✅','Password changed successfully!')">🔑 Update Password</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faculty Rank Tables (Admin Read-Only) -->
+      <div id="admRanks" style="display:none">
+        <div class="pg-title">🎓 Faculty Rank Tables</div>
+        <div class="pg-sub">View-only mirror of the faculty rank tables managed by the Finance Officer.</div>
+
+        <div class="card" style="margin-top:20px">
+          <div class="card-head">
+            <div>
+              <div class="card-title">All Faculty Ranks &amp; Hourly Rates</div>
+              <div style="font-size:12px;color:var(--text-muted)">Read-only — contact Finance Officer to make changes</div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Rank</th><th id="admRankRateHdr">Rate</th><th>Department</th></tr></thead>
+            <tbody id="admRankTableBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════════════════════ -->
+
+<input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/webp" hidden onchange="uploadProfilePhoto(this)"/>
+
+<!-- Add/Edit User Modal -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="uModalTitle">Add New User</div><button class="modal-close" onclick="closeModal('userModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg-row">
+        <div class="fg"><label class="fl">First Name</label><input class="fi" id="uFirst" placeholder="e.g. Jhon Gerald"/></div>
+        <div class="fg"><label class="fl">Last Name</label><input class="fi" id="uLast" placeholder="e.g. Batuaan"/></div>
+      </div>
+      <div class="fg"><label class="fl">Email Address</label><input class="fi" id="uEmail" type="email" placeholder="user@rcc.edu.ph"/></div>
+      <div class="fg-row">
+        <div class="fg"><label class="fl">Role</label><select class="fi" id="uRole"><option>Employee</option><option>Finance Officer</option><option>System Admin</option></select></div>
+        <div class="fg"><label class="fl">Status</label><select class="fi" id="uStatus"><option>Active</option><option>Inactive</option></select></div>
+      </div>
+      <div class="fg" id="uPassGroup"><label class="fl">Initial Password</label><input class="fi" id="uPass" type="password" placeholder="Set initial password"/></div>
+      <div class="fg-row">
+        <div class="fg"><label class="fl">Classification</label><select class="fi" id="uClass" onchange="toggleUserClassFields()"><option>Non-Teaching</option><option>Teaching</option></select></div>
+        <div class="fg"><label class="fl">Department</label><input class="fi" id="uDept" placeholder="e.g. College of Computer Studies"/></div>
+      </div>
+      <div class="fg" id="uSchoolLevelGroup" style="display:none">
+        <label class="fl">School Level</label>
+        <select class="fi" id="uSchoolLevel" onchange="onSchoolLevelChange()">
+          <option value="">— Select School Level —</option>
+          <option>College</option>
+          <option>Elementary</option>
+          <option>High School</option>
+          <option>Graduate School</option>
+        </select>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Determines which rank table applies to this teacher</div>
+      </div>
+      <div id="uCompensationFields" hidden>
+      <div id="uPaySectionTitle" style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--maroon-dark);margin:16px 0 10px">💰 PAY SETUP — MONTHLY-RATE</div>
+      <div class="fg-row">
+        <div class="fg">
+          <label class="fl">Monthly Basic Salary (₱) *</label>
+          <input class="fi" id="uSalary" type="number" step="0.01" min="0" placeholder="e.g. 28500.00"/>
+          <div id="uSalaryCap" style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Fixed monthly rate — used for benefits &amp; records eligibility.</div>
+        </div>
+        <div class="fg" id="uHourlyGroup">
+          <label class="fl" id="uHourlyLabel">Hourly Rate (₱) *</label>
+          <input class="fi" id="uHourly" type="number" step="0.01" min="0" placeholder="e.g. 190.00"/>
+          <div id="uHourlyHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Teaching pay = Hourly Rate × Hours Worked.</div>
+        </div>
+        <div class="fg" id="uRankGroup" style="display:none">
+          <label class="fl">Academic Rank</label>
+          <select class="fi" id="uRank" onchange="onRankChange()">
+            <option value="0">— Select Rank —</option>
+          </select>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Selecting a rank auto-fills the hourly rate. Type a custom rate to override.</div>
+        </div>
+      </div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label class="fl">Date Hired</label><input class="fi" id="uHire" type="date"/></div>
+        <div class="fg">
+          <label class="fl" id="uHrsLabel">Default Absences (days/month)</label>
+          <input class="fi" id="uHrsAbs" type="number" step="0.5" min="0" placeholder="e.g. 0"/>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45" id="uHrsCap">Used as the default when computing payroll.</div>
+        </div>
+      </div>
+      <div class="modal-err" id="uErr"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUser()">💾 Save User</button>
+    </div>
+  </div>
+</div>
+
+<!-- View User Modal -->
+<div class="modal-overlay" id="viewUserModal">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">User Profile</div><button class="modal-close" onclick="closeModal('viewUserModal')">✕</button></div>
+    <div class="modal-body" id="viewUserBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('viewUserModal')">Close</button>
+      <button class="btn btn-primary" onclick="openEditUserModal(viewCurrentUserId)">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Remove User Modal -->
+<div class="modal-overlay" id="removeModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-body" style="text-align:center;padding:32px 32px 24px">
+      <div style="width:64px;height:64px;border-radius:50%;background:#FFEBEE;border:2px solid #FFCDD2;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px">🗑️</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#C62828;margin-bottom:12px" id="removeTitle">Remove Employee</div>
+      <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">You are about to permanently remove:</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:20px" id="removeUserName">User Name (RCC-2020-0002)</div>
+      <div id="removeMsg" style="background:#FFEBEE;border:1px solid #FFCDD2;border-radius:10px;padding:16px 20px;margin-bottom:8px;text-align:left;font-size:13px;color:#C62828;line-height:1.6">⚠️ This will permanently delete the account and cannot be undone. Consider Deactivating instead.</div>
+    </div>
+    <div class="modal-foot" style="padding:0 32px 28px;justify-content:center;gap:12px">
+      <button class="btn btn-outline" style="min-width:140px" onclick="closeModal('removeModal')">Cancel</button>
+      <button class="btn btn-danger" style="min-width:140px" id="removeConfirmBtn">Yes, Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Deactivate Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><div class="modal-title">Confirm Action</div><button class="modal-close" onclick="closeModal('confirmModal')">✕</button></div>
+    <div class="modal-body" style="text-align:center">
+      <div style="font-size:48px;margin-bottom:12px" id="confirmIcon">⚠️</div>
+      <div style="font-size:14px;color:var(--text-muted);line-height:1.7" id="confirmMsg">Are you sure?</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('confirmModal')">Cancel</button>
+      <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deduction Edit Modal -->
+<div class="modal-overlay" id="dedModal">
+  <div class="modal" style="max-width:750px;width:95%">
+    <div class="modal-head"><div class="modal-title" id="dedModalTitle">Edit SSS Rates</div><button class="modal-close" onclick="closeModal('dedModal')">✕</button></div>
+    <div class="modal-body" id="dedModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('dedModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDedModal()">💾 Save Rates</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rank Edit Modal -->
+<div class="modal-overlay" id="rankModal">
+  <div class="modal" style="max-width:750px;width:95%">
+    <div class="modal-head"><div class="modal-title" id="rankModalTitle">Edit Faculty Ranks</div><button class="modal-close" onclick="closeModal('rankModal')">✕</button></div>
+    <div class="modal-body" id="rankModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal('rankModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveRankModal()">💾 Save Ranks</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bonus Type Modal -->
+<div class="modal-overlay" id="bonusTypeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)" id="bonusTypeModalTitle">Add Bonus Type</div>
+      <button onclick="closeModal('bonusTypeModal')" style="background:none;border:1px solid #DDD;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;color:#888">✕</button>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Bonus Name <span style="color:#C62828">*</span></label>
+        <input id="bonName" class="fi" placeholder="e.g. Mid-Year Incentive"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Type <span style="color:#C62828">*</span></label>
+        <select id="bonKind" class="fi">
+          <option value="fixed">Fixed Amount (₱)</option>
+          <option value="percent">Percentage of Gross (%)</option>
+          <option value="months">Months of Pay (× average monthly pay)</option>
+        </select>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">💡 <strong>Months of Pay:</strong> bonus = value × the employee's average monthly pay (Teaching: rate × hours · Non-Teaching: salary). Applied to <strong>December payroll runs ONLY</strong> — 13th-month-style annual payout, on or after the Give Date.</div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Multiplier / Amount</label>
+        <input id="bonValue" class="fi" type="number" step="0.01" min="0" placeholder="e.g. 1 for 1 month, or 5000.00, or 10 for 10%"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">📅 Give Date <span style="color:#999;font-weight:400">(optional)</span></label>
+        <input id="bonReleaseDate" class="fi" type="date"/>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">The bonus is excluded from payroll periods ending before this date, and will <strong>not appear in any payroll until the give date arrives</strong>. Leave blank to apply immediately.</div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">📅 End Date <span style="color:#999;font-weight:400">(optional)</span></label>
+        <input id="bonEndDate" class="fi" type="date"/>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Bonus <strong>auto-deactivates</strong> after this date. When it expires, you'll be prompted to set a new Give Date. Leave blank for no expiry.</div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Description <span style="color:#888;font-weight:400">(optional)</span></label>
+        <input id="bonDesc" class="fi" placeholder="Brief description of this bonus"/>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#F1F8E9;border:1px solid #DCEDC8;border-radius:10px;padding:12px 14px">
+        <input type="checkbox" id="bonDeMinimis" style="width:16px;height:16px;margin-top:2px;flex-shrink:0"/>
+        <label for="bonDeMinimis" style="font-size:12.5px;color:#33691E;line-height:1.5;cursor:pointer">
+          <strong>De Minimis Benefit</strong> (BIR RR 11-2018) — tax-exempt at <strong>hindi</strong> kasama sa ₱90,000 exemption pool. Exempt din sa SSS/PhilHealth/Pag-IBIG. Hal: rice subsidy, uniform, laundry, medical allowance.
+        </label>
+      </div>
+      <div id="bonErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="closeModal('bonusTypeModal')" class="btn btn-outline">Cancel</button>
+      <button onclick="saveBonusType()" class="btn btn-primary">💾 Save Bonus Type</button>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS DATE SCHEDULE MODAL (Give Date + End Date) -->
+<div class="modal-overlay" id="bonusDateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:520px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)" id="bonusDateModalTitle">📅 Set Bonus Schedule</div>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div style="background:#F1F8E9;border:1px solid #DCEDC8;border-radius:10px;padding:12px 14px;font-size:13px;color:#33691E">
+        <strong id="bonusDateModalBonusName">Bonus Name</strong> — set the schedule for this bonus.
+      </div>
+      <div style="display:flex;gap:16px">
+        <div style="flex:1">
+          <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">📅 Give Date <span style="color:#C62828">*</span></label>
+          <input id="bonusDateGive" class="fi" type="date"/>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">When the bonus starts applying</div>
+        </div>
+        <div style="flex:1">
+          <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">📅 End Date <span style="color:#999;font-weight:400">(optional)</span></label>
+          <input id="bonusDateEnd" class="fi" type="date"/>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Bonus auto-deactivates after this date</div>
+        </div>
+      </div>
+      <div id="bonusDateErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="skipBonusDateModal()" class="btn btn-outline" style="font-size:12px">⏭️ Skip — Apply Immediately</button>
+      <button onclick="saveBonusDateModal()" class="btn btn-primary">💾 Save Schedule</button>
+    </div>
+  </div>
+</div>
+
+<!-- END DATE PROMPT MODAL (Give Date arrived, no End Date set) -->
+<div class="modal-overlay" id="endDatePromptModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)">📅 Set End Date — Hanggan Kailan?</div>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div style="background:#FFF8E1;border:1px solid #FFD54F;border-radius:10px;padding:12px 14px;font-size:13px;color:#6D4C00">
+        <strong id="endDatePromptBonusName">Bonus Name</strong> has reached its Give Date.
+        <div style="margin-top:4px">📅 Give Date: <strong id="endDatePromptGiveDate">—</strong></div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">📅 End Date <span style="color:#C62828">*</span></label>
+        <input id="endDatePromptInput" class="fi" type="date"/>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.45">Bonus will <strong>auto-deactivate</strong> after this date. You'll be prompted to set a new Give Date when it expires.</div>
+      </div>
+      <div id="endDatePromptErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="saveEndDatePrompt()" class="btn btn-primary">💾 Save End Date</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMsg"></span></div>
+
+<!-- SIDEBAR DRAWER BACKDROP (mobile) -->
+<div id="sbBackdrop" onclick="closeSidebar()"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+  <script src="js/core.js?v=20261021c"></script>
+  <script src="js/auth.js?v=20261021e"></script>
+  <script src="js/google-sso.js?v=20261021b"></script>
+  <script src="js/profile-photo.js?v=20261021b"></script>
+  <script src="js/employees.js?v=20260822c"></script>
+  <script src="js/payroll.js?v=20261021c"></script>
+  <script src="js/reports.js?v=20261020a"></script>
+  <script src="js/bonus.js?v=20260903a"></script>
+  <script src="js/ranks.js?v=20261021a"></script>
+  <script src="js/teachingload.js?v=20261021a"></script>
+  <script src="js/formula.js?v=20261021a"></script>
+  <script src="js/deductions.js?v=20261021d"></script>
+  <script src="js/ui.js?v=20261020a"></script>
+
+<!-- ═══ ACCESS DENIED SCREEN ═══════════════════════════════ -->
+<div id="accessDenied" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;align-items:center;justify-content:center">
+  <div style="background:var(--white);border-radius:20px;padding:48px 40px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:slideUp 0.3s ease">
+    <div style="font-size:64px;margin-bottom:16px">🚫</div>
+    <div style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--maroon-dark);margin-bottom:8px">Access Denied</div>
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">You do not have permission to view this page.</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:28px">This section is restricted to authorized users only. Please contact your <strong>System Administrator</strong> if you believe this is an error.</div>
+    <button onclick="document.getElementById('accessDenied').style.display='none'"
+      style="padding:12px 28px;background:linear-gradient(135deg,var(--maroon-dark),var(--maroon));color:white;border:none;border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:700;cursor:pointer">
+      ← Go Back to Dashboard
+    </button>
+  </div>
+</div>
+
+
+<!-- ── Add/Edit Deduction Category Modal ─────────────────────── -->
+<div class="modal-overlay" id="dedCatModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)" id="dedCatModalTitle">Add Deduction Category</div>
+      <button onclick="closeModal('dedCatModal')" style="background:none;border:1px solid #DDD;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;color:#888">✕</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Category Name <span style="color:#C62828">*</span></label>
+        <input id="dedCatName" class="fi" placeholder="Enter category name"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Type <span style="color:#C62828">*</span></label>
+        <select id="dedCatType" class="fi" onchange="document.getElementById('dedCatAmountLabel').textContent=this.value==='fixed'?'Default Amount (₱)':'Rate (%)'">
+          <option value="fixed">Fixed Amount (₱)</option>
+          <option value="percent">Percentage of Gross (%)</option>
+        </select>
+      </div>
+      <div>
+        <label id="dedCatAmountLabel" style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Default Amount (₱)</label>
+        <input id="dedCatAmount" class="fi" type="number" step="0.01" min="0" placeholder="e.g. 500.00"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Description <span style="color:#888;font-weight:400">(optional)</span></label>
+        <input id="dedCatDesc" class="fi" placeholder="Brief description of this deduction"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Status</label>
+        <select id="dedCatStatus" class="fi">
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+      <div id="dedCatErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <!-- Footer -->
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="closeModal('dedCatModal')" class="btn btn-outline">Cancel</button>
+      <button onclick="saveDeductionCategory()" class="btn btn-primary">💾 Save Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add/Edit Leave Type Modal ────────────────────────────── -->
+<div class="modal-overlay" id="leaveTypeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)" id="leaveTypeModalTitle">Add Leave Type</div>
+      <button onclick="closeModal('leaveTypeModal')" style="background:none;border:1px solid #DDD;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;color:#888">✕</button>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Leave Type Name <span style="color:#C62828">*</span></label>
+        <input id="leaveTypeName" class="fi" placeholder="e.g. Sick Leave, Personal Leave"/>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Payment Status <span style="color:#C62828">*</span></label>
+        <select id="leaveTypePaid" class="fi">
+          <option value="true">Paid — Does not reduce gross pay</option>
+          <option value="false">Unpaid — Deducted from gross pay</option>
+        </select>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Paid leaves (e.g., Sick Leave) keep the employee's salary intact. Unpaid leaves (e.g., Personal Leave) reduce gross pay.</div>
+      </div>
+      <div id="leaveTypeErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="closeModal('leaveTypeModal')" class="btn btn-outline">Cancel</button>
+      <button onclick="saveLeaveType()" class="btn btn-primary">💾 Save Leave Type</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add/Edit Leave Record Modal ──────────────────────────── -->
+<div class="modal-overlay" id="leaveRecordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:0;width:90%;max-width:500px;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.3s ease">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #EEE8E0">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--maroon-dark)" id="leaveRecordModalTitle">Add Leave Record</div>
+      <button onclick="closeModal('leaveRecordModal')" style="background:none;border:1px solid #DDD;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;color:#888">✕</button>
+    </div>
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Employee <span style="color:#C62828">*</span></label>
+        <div class="combobox" id="leaveRecordEmpWrap">
+          <input type="hidden" id="leaveRecordEmp"/>
+          <input type="text" id="leaveRecordEmpSearch" class="fi" style="width:100%;padding-right:36px" placeholder="Search employee name or email..." autocomplete="off" role="combobox" aria-label="Employee" aria-autocomplete="list" aria-controls="leaveRecordEmpList" aria-expanded="false" onfocus="openLeaveRecordEmpList()" oninput="onLeaveRecordEmpInput()" onkeydown="onLeaveRecordEmpKey(event)"/>
+          <button type="button" class="combobox-arrow" aria-label="Show employee list" onclick="toggleLeaveRecordEmpList()">▼</button>
+          <div class="combobox-list" id="leaveRecordEmpList" role="listbox"></div>
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Leave Type <span style="color:#C62828">*</span></label>
+        <select id="leaveRecordType" class="fi"></select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Start Date <span style="color:#C62828">*</span></label>
+          <input type="date" id="leaveRecordStart" class="fi" onchange="updateLeaveRecordDays()"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">End Date <span style="color:#C62828">*</span></label>
+          <input type="date" id="leaveRecordEnd" class="fi" onchange="updateLeaveRecordDays()"/>
+        </div>
+      </div>
+      <div>
+        <label style="display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px">Days <span style="color:#C62828">*</span></label>
+        <input type="number" id="leaveRecordDays" class="fi" min="0.5" step="0.5" placeholder="Auto-computed from dates" oninput="leaveRecordDaysManuallySet=true"/>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Auto-computed from the start and end dates (inclusive). You can override it.</div>
+      </div>
+      <div id="leaveRecordErr" style="display:none;background:#FDECEA;border:1px solid #F5C6CB;color:#721C24;border-radius:8px;padding:10px 14px;font-size:13px"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid #EEE8E0">
+      <button onclick="closeModal('leaveRecordModal')" class="btn btn-outline">Cancel</button>
+      <button onclick="saveLeaveRecord()" class="btn btn-primary">💾 Save Leave Record</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function onYearChange() {
+  const yearEl  = document.getElementById('rptYear');
+  const monthEl = document.getElementById('rptMonth');
+  const year    = yearEl.value;
+  monthEl.value    = '';
+  monthEl.disabled = !year;
+  monthEl.style.opacity = year ? '1' : '0.4';
+  document.getElementById('rptMonthLabel').style.color = year ? '#444' : '#BBB';
+  document.getElementById('reportOutput').style.display = 'none';
+  if (!year) return;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  monthEl.innerHTML = `<option value="">— Select Month —</option>
+    <option value="0">📅 Full Year ${year}</option>
+    ${months.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('')}`;
+}
+
+function onMonthChange() {
+  const year  = parseInt(document.getElementById('rptYear').value);
+  const month = parseInt(document.getElementById('rptMonth').value);
+  if (!year || isNaN(month)) return;
+  const fullMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  if (month === 0) { showYearReport(year); }
+  else { showMonthReport(month, year, fullMonths[month-1]); }
+}
+</script>
+</body>
+</html>

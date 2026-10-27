@@ -1,0 +1,21 @@
+const fs = require('fs'), vm = require('vm'), assert = require('assert/strict');
+const source = fs.readFileSync(__dirname + '/../public/js/payroll.js', 'utf8');
+const ctx = vm.createContext({_savedDemo:{}, WORK_DAYS:22, HOURS_PER_WORKLOAD:3});
+vm.runInContext(fs.readFileSync(__dirname + '/../public/js/teachingload.js','utf8'),ctx);
+vm.runInContext(source.match(/function calcScheduledMonthHours[\s\S]*?\n}/)[0],ctx);
+vm.runInContext(source.match(/function latestTeachingLoads[\s\S]*?\n}/)[0],ctx);
+vm.runInContext(`
+  teachingLoadRecords = [{id:1,empId:3,semester:'1st',schoolYear:'2026-2027'}];
+  teachingLoadClasses = [{recordId:1,subject:'Data Structures',days:'M,W,F',timeStart:'7:00 AM',timeEnd:'10:00 AM',hoursPerWeek:9}];
+`,ctx);
+const loads = (month,year) => vm.runInContext(`latestTeachingLoads(3,'1st','2026-2027',${month},${year})`,ctx);
+assert.equal(loads(10,2026)[0].qty,39);
+assert.equal(loads(10,2026)[0].wlQty,13);
+assert.equal(loads(7,2026)[0].qty,42);
+assert.equal(loads(2,2026)[0].qty,36);
+assert.equal(loads(2,2028)[0].qty,36);
+vm.runInContext('WORK_DAYS = 26',ctx);
+assert.equal(loads(10,2026)[0].qty,39);
+vm.runInContext("teachingLoadClasses[0].days = 'Th'; teachingLoadClasses[0].timeStart = '7:00 AM'; teachingLoadClasses[0].timeEnd = '8:30 AM'",ctx);
+assert.equal(loads(10,2026)[0].qty,7.5);
+console.log('PASS: October MWF = 39 hours / 13 workloads; month changes, leap year, Thursday, and independence from absence divisor.');

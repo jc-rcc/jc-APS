@@ -1,0 +1,146 @@
+/* ════════════════════════════════════════════════════════════
+   RCC-APS · Responsive layer
+   Layer on top of style.css — makes every screen work on any
+   device (desktop / tablet / mobile).
+   Breakpoints: tablet ≤1024px · mobile ≤768px · small ≤480px
+════════════════════════════════════════════════════════════ */
+
+*{box-sizing:border-box}
+img{max-width:100%;height:auto}
+html{-webkit-text-size-adjust:100%}
+body{min-width:320px;overflow-x:hidden}
+
+/* ── HAMBURGER (hidden on desktop, shown on tablet/mobile) ── */
+.menu-btn{
+  display:none;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:9px;border:1px solid var(--border);
+  background:var(--white);color:var(--maroon);font-size:20px;line-height:1;
+  cursor:pointer;flex-shrink:0;transition:all .2s;padding:0;
+}
+.menu-btn:hover{background:var(--gold-pale);border-color:var(--maroon)}
+
+/* Drawer backdrop (one shared element, shown by JS) */
+#sbBackdrop{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:99;cursor:pointer;
+}
+#sbBackdrop.show{display:block;animation:fadeIn .2s ease}
+
+/* ── ≤1024px · TABLET ─────────────────────────────────────── */
+@media screen and (max-width:1024px){
+  .menu-btn{display:inline-flex}
+  .sidebar{
+    transform:translateX(-100%);
+    transition:transform .3s ease;
+    box-shadow:none;
+  }
+  .dashboard-page.sb-open .sidebar{transform:translateX(0);box-shadow:0 0 40px rgba(0,0,0,.35)}
+  .dash-main{margin-left:0}
+  .dash-content{padding:24px}
+  .stats-grid.s4{grid-template-columns:repeat(2,1fr)}
+
+  /* LOGIN — stack into compact branding header + full-width form */
+  #loginPage{flex-direction:column}
+  .login-left{
+    width:100% !important;min-height:0 !important;
+    padding:24px 20px 18px !important;
+  }
+  .login-left img[src*="RCC_LOGO"]{display:none !important}
+  .lp-tagline,.lp-feats{display:none !important}
+  .login-right{padding:28px 24px 64px !important}
+  .login-right > div:last-child{position:static !important;margin-top:28px}
+  .login-right .err-box{width:100%}
+}
+
+/* ── ≤768px · MOBILE ──────────────────────────────────────── */
+@media screen and (max-width:768px){
+  /* DASHBOARD SHELL */
+  .dash-content{padding:14px}
+  .topbar{padding:0 12px}
+  .topbar .tb-right > div:first-child{display:none}
+  .pg-title{font-size:20px}
+  .pg-sub{margin-bottom:16px}
+
+  /* HERO */
+  .hero-banner{flex-direction:column;align-items:flex-start;gap:14px;padding:20px}
+  .hero-stats{flex-wrap:wrap;width:100%}
+  .hero-stat{flex:1;min-width:110px;padding:12px 14px}
+
+  /* STATS + GRIDS → stack */
+  .stats-grid.s3,.stats-grid.s2{grid-template-columns:repeat(2,1fr)}
+  .quick-grid{grid-template-columns:1fr 1fr}
+  .ded-grid{grid-template-columns:1fr 1fr}
+  .fg-row{grid-template-columns:1fr}
+  .search-wrap{min-width:100%}
+
+  /* Inline-styled grids (index.html + JS-rendered) → 1 column */
+  [style*="grid-template-columns:2fr 1fr"],
+  [style*="grid-template-columns:1fr 2fr"],
+  [style*="grid-template-columns:repeat(3,1fr)"]{grid-template-columns:1fr !important}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important}
+
+  /* Admin hero inline stats wrap */
+  [style*="display:flex;gap:32px"]{flex-wrap:wrap}
+
+  /* TABLES → stacked cards (no horizontal scroll ever) */
+  table:not(.ps-pay-table){width:100%;min-width:0}
+  table:not(.ps-pay-table) thead{display:none}
+  table:not(.ps-pay-table) tbody,table:not(.ps-pay-table) tr,table:not(.ps-pay-table) td{display:block}
+  table:not(.ps-pay-table) tr{
+    margin:0 0 12px;padding:8px 14px;
+    background:#fff;border:1px solid var(--border);border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);
+  }
+  table:not(.ps-pay-table) td{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;padding:10px 2px;
+    border-bottom:1px solid #F5F0EA;text-align:left !important;
+  }
+  table:not(.ps-pay-table) td:last-child{border-bottom:none}
+  table:not(.ps-pay-table) td::before{
+    content:attr(data-label);
+    font-size:10.5px;font-weight:700;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--text-muted);flex-shrink:0;max-width:45%;
+  }
+  table:not(.ps-pay-table) td[data-label=""]::before{display:none}
+  table:not(.ps-pay-table) td[colspan]{
+    justify-content:center;text-align:center !important;
+    background:#FAFAF8;border-radius:8px;margin:6px 0;
+  }
+  table:not(.ps-pay-table) td[colspan]::before{display:none}
+  table:not(.ps-pay-table) tr:hover{background:#fff}
+
+  /* MODALS — full-screen sheet */
+  .modal{width:100%;max-width:100%;height:100vh;max-height:100vh;border-radius:0}
+  .modal-overlay{padding:0}
+
+  /* PAYSLIP */
+  .payslip-doc{padding:18px 14px}
+  #psDoc,#finPsDoc,#admPsDoc{padding:22px 16px !important}
+  [style*="padding:0 48px 32px"]{padding:16px !important}
+
+  /* FORM TOOLBARS */
+  .toolbar{flex-direction:column;align-items:stretch;width:100%}
+  .toolbar .fi{width:100% !important}
+
+  /* Report period selector */
+  .card-head > [style*="display:flex;align-items:center;gap:16px"]{
+    flex-direction:column;align-items:flex-start;width:100%
+  }
+}
+
+/* ── ≤480px · SMALL PHONES ────────────────────────────────── */
+@media screen and (max-width:480px){
+  .stats-grid.s4,
+  .stats-grid.s3,
+  .stats-grid.s2,
+  .quick-grid,
+  .ded-grid{grid-template-columns:1fr}
+  .hero-stat{min-width:100%}
+  .tb-name,.tb-role{display:none}
+  .dash-content{padding:12px}
+  .stat-val{font-size:18px}
+  .hero-name{font-size:20px}
+  .card-head{padding:14px}
+  .card-body{padding:14px}
+}

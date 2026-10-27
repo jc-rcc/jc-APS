@@ -1,0 +1,959 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "first": "Demo",
+      "last": "User 1",
+      "email": "admin@rcc.edu.ph",
+      "role": "System Admin",
+      "status": "Active",
+      "date": "Jan 10, 2026",
+      "salary": 45000,
+      "classification": "Non-Teaching",
+      "department": "IT Office",
+      "hireDate": "2022-01-10",
+      "hourlyRate": 0,
+      "absenceDays": 0,
+      "hoursWorked": 0
+    },
+    {
+      "id": 2,
+      "first": "Demo",
+      "last": "User 2",
+      "email": "finance@rcc.edu.ph",
+      "role": "Finance Officer",
+      "status": "Active",
+      "date": "Jan 10, 2026",
+      "salary": 38000,
+      "classification": "Non-Teaching",
+      "department": "Finance Office",
+      "hireDate": "2023-01-15",
+      "hourlyRate": 0,
+      "absenceDays": 0,
+      "hoursWorked": 0
+    },
+    {
+      "id": 3,
+      "first": "Demo",
+      "last": "User 3",
+      "email": "employee@rcc.edu.ph",
+      "role": "Employee",
+      "status": "Active",
+      "date": "Jan 12, 2026",
+      "salary": 28500,
+      "classification": "Teaching",
+      "department": "College of Computer Studies",
+      "hireDate": "2024-08-01",
+      "hourlyRate": 190,
+      "absenceDays": 0,
+      "hoursWorked": 150,
+      "schoolLevel": "College"
+    }
+  ],
+  "nextUserId": 13,
+  "cashAdvances": {},
+  "bonusTypes": [
+    {
+      "id": 4,
+      "name": "13th Month Pay",
+      "kind": "months",
+      "value": 1,
+      "desc": "",
+      "status": "Active",
+      "releaseDate": "",
+      "endDate": ""
+    }
+  ],
+  "nextBonusId": 5,
+  "auth": {
+    "1": {
+      "id": 1,
+      "email": "admin@rcc.edu.ph",
+      "pass": "",
+      "label": "System Admin",
+      "icon": "🔧",
+      "page": "adminPage",
+      "role": "admin",
+      "status": "Active"
+    },
+    "2": {
+      "id": 2,
+      "email": "finance@rcc.edu.ph",
+      "pass": "",
+      "label": "Finance Officer",
+      "icon": "💼",
+      "page": "financePage",
+      "role": "finance",
+      "status": "Active"
+    },
+    "3": {
+      "id": 3,
+      "email": "employee@rcc.edu.ph",
+      "pass": "",
+      "label": "Employee",
+      "icon": "👤",
+      "page": "empPage",
+      "role": "employee",
+      "status": "Active"
+    }
+  },
+  "deductionCategories": [],
+  "nextDedCatId": 1,
+  "payrollRecords": [],
+  "bonusPayouts": {},
+  "sssTable": [
+    {
+      "range": "1.00 - 5,249.99",
+      "emp": 250,
+      "er": 500,
+      "min": 1,
+      "max": 5250
+    },
+    {
+      "range": "5,250.00 - 5,749.99",
+      "emp": 275,
+      "er": 550,
+      "min": 5250,
+      "max": 5750
+    },
+    {
+      "range": "5,750.00 - 6,249.99",
+      "emp": 300,
+      "er": 600,
+      "min": 5750,
+      "max": 6250
+    },
+    {
+      "range": "6,250.00 - 6,749.99",
+      "emp": 325,
+      "er": 650,
+      "min": 6250,
+      "max": 6750
+    },
+    {
+      "range": "6,750.00 - 7,249.99",
+      "emp": 350,
+      "er": 700,
+      "min": 6750,
+      "max": 7250
+    },
+    {
+      "range": "7,250.00 - 7,749.99",
+      "emp": 375,
+      "er": 750,
+      "min": 7250,
+      "max": 7750
+    },
+    {
+      "range": "7,750.00 - 8,249.99",
+      "emp": 400,
+      "er": 800,
+      "min": 7750,
+      "max": 8250
+    },
+    {
+      "range": "8,250.00 - 8,749.99",
+      "emp": 425,
+      "er": 850,
+      "min": 8250,
+      "max": 8750
+    },
+    {
+      "range": "8,750.00 - 9,249.99",
+      "emp": 450,
+      "er": 900,
+      "min": 8750,
+      "max": 9250
+    },
+    {
+      "range": "9,250.00 - 9,749.99",
+      "emp": 475,
+      "er": 950,
+      "min": 9250,
+      "max": 9750
+    },
+    {
+      "range": "9,750.00 - 10,249.99",
+      "emp": 500,
+      "er": 1000,
+      "min": 9750,
+      "max": 10250
+    },
+    {
+      "range": "10,250.00 - 10,749.99",
+      "emp": 525,
+      "er": 1050,
+      "min": 10250,
+      "max": 10750
+    },
+    {
+      "range": "10,750.00 - 11,249.99",
+      "emp": 550,
+      "er": 1100,
+      "min": 10750,
+      "max": 11250
+    },
+    {
+      "range": "11,250.00 - 11,749.99",
+      "emp": 575,
+      "er": 1150,
+      "min": 11250,
+      "max": 11750
+    },
+    {
+      "range": "11,750.00 - 12,249.99",
+      "emp": 600,
+      "er": 1200,
+      "min": 11750,
+      "max": 12250
+    },
+    {
+      "range": "12,250.00 - 12,749.99",
+      "emp": 625,
+      "er": 1250,
+      "min": 12250,
+      "max": 12750
+    },
+    {
+      "range": "12,750.00 - 13,249.99",
+      "emp": 650,
+      "er": 1300,
+      "min": 12750,
+      "max": 13250
+    },
+    {
+      "range": "13,250.00 - 13,749.99",
+      "emp": 675,
+      "er": 1350,
+      "min": 13250,
+      "max": 13750
+    },
+    {
+      "range": "13,750.00 - 14,249.99",
+      "emp": 700,
+      "er": 1400,
+      "min": 13750,
+      "max": 14250
+    },
+    {
+      "range": "14,250.00 - 14,749.99",
+      "emp": 725,
+      "er": 1450,
+      "min": 14250,
+      "max": 14750
+    },
+    {
+      "range": "14,750.00 - 15,249.99",
+      "emp": 750,
+      "er": 1500,
+      "min": 14750,
+      "max": 15250
+    },
+    {
+      "range": "15,250.00 - 15,749.99",
+      "emp": 775,
+      "er": 1550,
+      "min": 15250,
+      "max": 15750
+    },
+    {
+      "range": "15,750.00 - 16,249.99",
+      "emp": 800,
+      "er": 1600,
+      "min": 15750,
+      "max": 16250
+    },
+    {
+      "range": "16,250.00 - 16,749.99",
+      "emp": 825,
+      "er": 1650,
+      "min": 16250,
+      "max": 16750
+    },
+    {
+      "range": "16,750.00 - 17,249.99",
+      "emp": 850,
+      "er": 1700,
+      "min": 16750,
+      "max": 17250
+    },
+    {
+      "range": "17,250.00 - 17,749.99",
+      "emp": 875,
+      "er": 1750,
+      "min": 17250,
+      "max": 17750
+    },
+    {
+      "range": "17,750.00 - 18,249.99",
+      "emp": 900,
+      "er": 1800,
+      "min": 17750,
+      "max": 18250
+    },
+    {
+      "range": "18,250.00 - 18,749.99",
+      "emp": 925,
+      "er": 1850,
+      "min": 18250,
+      "max": 18750
+    },
+    {
+      "range": "18,750.00 - 19,249.99",
+      "emp": 950,
+      "er": 1900,
+      "min": 18750,
+      "max": 19250
+    },
+    {
+      "range": "19,250.00 - 19,749.99",
+      "emp": 975,
+      "er": 1950,
+      "min": 19250,
+      "max": 19750
+    },
+    {
+      "range": "19,750.00 - 20,249.99",
+      "emp": 1000,
+      "er": 2000,
+      "min": 19750,
+      "max": 20250
+    },
+    {
+      "range": "20,250.00 - 20,749.99",
+      "emp": 1025,
+      "er": 2050,
+      "min": 20250,
+      "max": 20750
+    },
+    {
+      "range": "20,750.00 - 21,249.99",
+      "emp": 1050,
+      "er": 2100,
+      "min": 20750,
+      "max": 21250
+    },
+    {
+      "range": "21,250.00 - 21,749.99",
+      "emp": 1075,
+      "er": 2150,
+      "min": 21250,
+      "max": 21750
+    },
+    {
+      "range": "21,750.00 - 22,249.99",
+      "emp": 1100,
+      "er": 2200,
+      "min": 21750,
+      "max": 22250
+    },
+    {
+      "range": "22,250.00 - 22,749.99",
+      "emp": 1125,
+      "er": 2250,
+      "min": 22250,
+      "max": 22750
+    },
+    {
+      "range": "22,750.00 - 23,249.99",
+      "emp": 1150,
+      "er": 2300,
+      "min": 22750,
+      "max": 23250
+    },
+    {
+      "range": "23,250.00 - 23,749.99",
+      "emp": 1175,
+      "er": 2350,
+      "min": 23250,
+      "max": 23750
+    },
+    {
+      "range": "23,750.00 - 24,249.99",
+      "emp": 1200,
+      "er": 2400,
+      "min": 23750,
+      "max": 24250
+    },
+    {
+      "range": "24,250.00 - 24,749.99",
+      "emp": 1225,
+      "er": 2450,
+      "min": 24250,
+      "max": 24750
+    },
+    {
+      "range": "24,750.00 - 25,249.99",
+      "emp": 1250,
+      "er": 2500,
+      "min": 24750,
+      "max": 25250
+    },
+    {
+      "range": "25,250.00 - 25,749.99",
+      "emp": 1275,
+      "er": 2550,
+      "min": 25250,
+      "max": 25750
+    },
+    {
+      "range": "25,750.00 - 26,249.99",
+      "emp": 1300,
+      "er": 2600,
+      "min": 25750,
+      "max": 26250
+    },
+    {
+      "range": "26,250.00 - 26,749.99",
+      "emp": 1325,
+      "er": 2650,
+      "min": 26250,
+      "max": 26750
+    },
+    {
+      "range": "26,750.00 - 27,249.99",
+      "emp": 1350,
+      "er": 2700,
+      "min": 26750,
+      "max": 27250
+    },
+    {
+      "range": "27,250.00 - 27,749.99",
+      "emp": 1375,
+      "er": 2750,
+      "min": 27250,
+      "max": 27750
+    },
+    {
+      "range": "27,750.00 - 28,249.99",
+      "emp": 1400,
+      "er": 2800,
+      "min": 27750,
+      "max": 28250
+    },
+    {
+      "range": "28,250.00 - 28,749.99",
+      "emp": 1425,
+      "er": 2850,
+      "min": 28250,
+      "max": 28750
+    },
+    {
+      "range": "28,750.00 - 29,249.99",
+      "emp": 1450,
+      "er": 2900,
+      "min": 28750,
+      "max": 29250
+    },
+    {
+      "range": "29,250.00 - 29,749.99",
+      "emp": 1475,
+      "er": 2950,
+      "min": 29250,
+      "max": 29750
+    },
+    {
+      "range": "29,750.00 - 30,249.99",
+      "emp": 1500,
+      "er": 3000,
+      "min": 29750,
+      "max": 30250
+    },
+    {
+      "range": "30,250.00 - 30,749.99",
+      "emp": 1525,
+      "er": 3050,
+      "min": 30250,
+      "max": 30750
+    },
+    {
+      "range": "30,750.00 - 31,249.99",
+      "emp": 1550,
+      "er": 3100,
+      "min": 30750,
+      "max": 31250
+    },
+    {
+      "range": "31,250.00 - 31,749.99",
+      "emp": 1575,
+      "er": 3150,
+      "min": 31250,
+      "max": 31750
+    },
+    {
+      "range": "31,750.00 - 32,249.99",
+      "emp": 1600,
+      "er": 3200,
+      "min": 31750,
+      "max": 32250
+    },
+    {
+      "range": "32,250.00 - 32,749.99",
+      "emp": 1625,
+      "er": 3250,
+      "min": 32250,
+      "max": 32750
+    },
+    {
+      "range": "32,750.00 - 33,249.99",
+      "emp": 1650,
+      "er": 3300,
+      "min": 32750,
+      "max": 33250
+    },
+    {
+      "range": "33,250.00 - 33,749.99",
+      "emp": 1675,
+      "er": 3350,
+      "min": 33250,
+      "max": 33750
+    },
+    {
+      "range": "33,750.00 - 34,249.99",
+      "emp": 1700,
+      "er": 3400,
+      "min": 33750,
+      "max": 34250
+    },
+    {
+      "range": "34,250.00 - 34,749.99",
+      "emp": 1725,
+      "er": 3450,
+      "min": 34250,
+      "max": 34750
+    },
+    {
+      "range": "34,750.00+",
+      "emp": 1750,
+      "er": 3500,
+      "min": 34750,
+      "max": null
+    }
+  ],
+  "philData": {
+    "rate": 5,
+    "min": 500,
+    "max": 5000,
+    "floor": 10000,
+    "ceiling": 100000
+  },
+  "pagData": {
+    "rate1": 1,
+    "rate2": 2,
+    "empMax": 100,
+    "erMax": 100
+  },
+  "birData": [
+    {
+      "range": "0 - 250,000",
+      "base": 0,
+      "rate": 0,
+      "min": 0,
+      "max": 250000
+    },
+    {
+      "range": "250,000 - 400,000",
+      "base": 0,
+      "rate": 15,
+      "min": 250000,
+      "max": 400000
+    },
+    {
+      "range": "400,000 - 800,000",
+      "base": 22500,
+      "rate": 20,
+      "min": 400000,
+      "max": 800000
+    },
+    {
+      "range": "800,000 - 2,000,000",
+      "base": 102500,
+      "rate": 25,
+      "min": 800000,
+      "max": 2000000
+    },
+    {
+      "range": "2,000,000 - 8,000,000",
+      "base": 402500,
+      "rate": 30,
+      "min": 2000000,
+      "max": 8000000
+    },
+    {
+      "range": "8,000,000+",
+      "base": 2202500,
+      "rate": 35,
+      "min": 8000000,
+      "max": null
+    }
+  ],
+  "dedMeta": {},
+  "bonusExemptionLimit": 90000,
+  "workDays": 22,
+  "leaveTypes": [
+    {
+      "id": 1,
+      "name": "Sick Leave",
+      "isPaid": true
+    },
+    {
+      "id": 2,
+      "name": "Personal Leave",
+      "isPaid": false
+    },
+    {
+      "id": 3,
+      "name": "Vacation Leave",
+      "isPaid": false
+    },
+    {
+      "id": 4,
+      "name": "Maternity Leave",
+      "isPaid": true
+    },
+    {
+      "id": 5,
+      "name": "Paternity Leave",
+      "isPaid": true
+    }
+  ],
+  "nextLeaveTypeId": 6,
+  "leaveRecords": [],
+  "nextLeaveRecordId": 1,
+  "attendance": [],
+  "teacherRanks": [
+    {
+      "id": 1,
+      "department": "College",
+      "rank": "Assistant Instructor 1",
+      "rate": 150
+    },
+    {
+      "id": 2,
+      "department": "College",
+      "rank": "Assistant Instructor 2",
+      "rate": 170
+    },
+    {
+      "id": 3,
+      "department": "College",
+      "rank": "Instructor 1",
+      "rate": 190
+    },
+    {
+      "id": 4,
+      "department": "College",
+      "rank": "Instructor 2",
+      "rate": 210
+    },
+    {
+      "id": 5,
+      "department": "College",
+      "rank": "Instructor 3",
+      "rate": 230
+    },
+    {
+      "id": 6,
+      "department": "College",
+      "rank": "Instructor 4",
+      "rate": 250
+    },
+    {
+      "id": 7,
+      "department": "College",
+      "rank": "Assistant Professor 1",
+      "rate": 270
+    },
+    {
+      "id": 8,
+      "department": "College",
+      "rank": "Assistant Professor 2",
+      "rate": 290
+    },
+    {
+      "id": 9,
+      "department": "College",
+      "rank": "Assistant Professor 3",
+      "rate": 310
+    },
+    {
+      "id": 10,
+      "department": "College",
+      "rank": "Associate Professor 1",
+      "rate": 330
+    },
+    {
+      "id": 11,
+      "department": "College",
+      "rank": "Associate Professor 2",
+      "rate": 350
+    },
+    {
+      "id": 12,
+      "department": "College",
+      "rank": "Associate Professor 3",
+      "rate": 370
+    },
+    {
+      "id": 13,
+      "department": "College",
+      "rank": "Professor 1",
+      "rate": 390
+    },
+    {
+      "id": 14,
+      "department": "College",
+      "rank": "Professor 2",
+      "rate": 420
+    },
+    {
+      "id": 15,
+      "department": "College",
+      "rank": "Professor 3",
+      "rate": 450
+    },
+    {
+      "id": 16,
+      "department": "Elementary",
+      "rank": "Provisional Teacher 1A (PT-1A)",
+      "rate": 8000
+    },
+    {
+      "id": 17,
+      "department": "Elementary",
+      "rank": "Provisional Teacher 1B (PT-1B)",
+      "rate": 9000
+    },
+    {
+      "id": 18,
+      "department": "Elementary",
+      "rank": "Teacher 1A (T-1A)",
+      "rate": 10000
+    },
+    {
+      "id": 19,
+      "department": "Elementary",
+      "rank": "Teacher 1B (T-1B)",
+      "rate": 11000
+    },
+    {
+      "id": 20,
+      "department": "Elementary",
+      "rank": "Teacher 2A (T-2A)",
+      "rate": 12000
+    },
+    {
+      "id": 21,
+      "department": "Elementary",
+      "rank": "Teacher 2B (T-2B)",
+      "rate": 13000
+    },
+    {
+      "id": 22,
+      "department": "Elementary",
+      "rank": "Teacher 3A (T-3A)",
+      "rate": 14000
+    },
+    {
+      "id": 23,
+      "department": "Elementary",
+      "rank": "Teacher 3B (T-3B)",
+      "rate": 15000
+    },
+    {
+      "id": 24,
+      "department": "Elementary",
+      "rank": "Master Teacher 1A (MT-1A)",
+      "rate": 16000
+    },
+    {
+      "id": 25,
+      "department": "Elementary",
+      "rank": "Master Teacher 1B (MT-1B)",
+      "rate": 17000
+    },
+    {
+      "id": 26,
+      "department": "Elementary",
+      "rank": "Master Teacher 2A (MT-2A)",
+      "rate": 20000
+    },
+    {
+      "id": 27,
+      "department": "Elementary",
+      "rank": "Master Teacher 2B (MT-2B)",
+      "rate": 22000
+    },
+    {
+      "id": 28,
+      "department": "High School",
+      "rank": "Provisional Teacher 1A (PT-1A)",
+      "rate": 500
+    },
+    {
+      "id": 29,
+      "department": "High School",
+      "rank": "Provisional Teacher 1B (PT-1B)",
+      "rate": 600
+    },
+    {
+      "id": 30,
+      "department": "High School",
+      "rank": "Teacher 1A (T-1A)",
+      "rate": 700
+    },
+    {
+      "id": 31,
+      "department": "High School",
+      "rank": "Teacher 1B (T-1B)",
+      "rate": 800
+    },
+    {
+      "id": 32,
+      "department": "High School",
+      "rank": "Teacher 2A (T-2A)",
+      "rate": 900
+    },
+    {
+      "id": 33,
+      "department": "High School",
+      "rank": "Teacher 2B (T-2B)",
+      "rate": 1000
+    },
+    {
+      "id": 34,
+      "department": "High School",
+      "rank": "Teacher 3A (T-3A)",
+      "rate": 1100
+    },
+    {
+      "id": 35,
+      "department": "High School",
+      "rank": "Teacher 3B (T-3B)",
+      "rate": 1200
+    },
+    {
+      "id": 36,
+      "department": "High School",
+      "rank": "Master Teacher 1A (MT-1A)",
+      "rate": 1300
+    },
+    {
+      "id": 37,
+      "department": "High School",
+      "rank": "Master Teacher 1B (MT-1B)",
+      "rate": 1400
+    },
+    {
+      "id": 38,
+      "department": "High School",
+      "rank": "Master Teacher 2A (MT-2A)",
+      "rate": 1500
+    },
+    {
+      "id": 39,
+      "department": "High School",
+      "rank": "Master Teacher 2B (MT-2B)",
+      "rate": 1600
+    },
+    {
+      "id": 40,
+      "department": "Graduate School",
+      "rank": "Assistant Instructor 1",
+      "rate": 150
+    },
+    {
+      "id": 41,
+      "department": "Graduate School",
+      "rank": "Assistant Instructor 2",
+      "rate": 170
+    },
+    {
+      "id": 42,
+      "department": "Graduate School",
+      "rank": "Instructor 1",
+      "rate": 190
+    },
+    {
+      "id": 43,
+      "department": "Graduate School",
+      "rank": "Instructor 2",
+      "rate": 210
+    },
+    {
+      "id": 44,
+      "department": "Graduate School",
+      "rank": "Instructor 3",
+      "rate": 230
+    },
+    {
+      "id": 45,
+      "department": "Graduate School",
+      "rank": "Instructor 4",
+      "rate": 250
+    },
+    {
+      "id": 46,
+      "department": "Graduate School",
+      "rank": "Assistant Professor 1",
+      "rate": 270
+    },
+    {
+      "id": 47,
+      "department": "Graduate School",
+      "rank": "Assistant Professor 2",
+      "rate": 290
+    },
+    {
+      "id": 48,
+      "department": "Graduate School",
+      "rank": "Assistant Professor 3",
+      "rate": 310
+    },
+    {
+      "id": 49,
+      "department": "Graduate School",
+      "rank": "Associate Professor 1",
+      "rate": 330
+    },
+    {
+      "id": 50,
+      "department": "Graduate School",
+      "rank": "Associate Professor 2",
+      "rate": 350
+    },
+    {
+      "id": 51,
+      "department": "Graduate School",
+      "rank": "Associate Professor 3",
+      "rate": 370
+    },
+    {
+      "id": 52,
+      "department": "Graduate School",
+      "rank": "Professor 1",
+      "rate": 390
+    },
+    {
+      "id": 53,
+      "department": "Graduate School",
+      "rank": "Professor 2",
+      "rate": 410
+    },
+    {
+      "id": 54,
+      "department": "Graduate School",
+      "rank": "Professor 3",
+      "rate": 430
+    }
+  ],
+  "nextRankId": 55,
+  "profiles": {},
+  "savedAt": "2026-09-19T06:01:43.064Z",
+  "infoSheets": [],
+  "infoSheetEducation": [],
+  "teachingLoads": [],
+  "nextSheetId": 1,
+  "nextEduId": 1,
+  "nextLoadId": 1
+}

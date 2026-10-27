@@ -1,0 +1,53 @@
+const fs = require('fs'), vm = require('vm'), assert = require('assert/strict');
+const payroll = fs.readFileSync(__dirname + '/../public/js/payroll.js','utf8');
+const deductions = fs.readFileSync(__dirname + '/../public/js/deductions.js','utf8');
+const elements = {};
+for(const id of ['dedCatModalTitle','dedCatName','dedCatType','dedCatAmount','dedCatDesc','dedCatStatus','dedCatErr','dedCatAmountLabel','dedCatModal']) elements[id]={value:'',style:{},dataset:{}};
+elements.calcCustomRow={style:{},dataset:{},innerHTML:''};
+const context=vm.createContext({esc:s=>String(s),deductionCategories:[],document:{getElementById:id=>elements[id]},editDeductionCategory:id=>{context.edited=id;}});
+for(const name of ['openAddDeductionCategory','openPeraaDeduction']) vm.runInContext(deductions.match(new RegExp('function '+name+'[\\s\\S]*?\\n}'))[0],context);
+vm.runInContext('openPeraaDeduction()',context);
+assert.equal(elements.dedCatName.value,'PERAA');
+assert.equal(elements.dedCatAmount.value,'0');
+for(const name of ['payrollDeductionCategories','activeCustomDeductions','collectCustomOverrides','renderCalcCustomInputs']) vm.runInContext(payroll.match(new RegExp('function '+name+'[\\s\\S]*?\\n}'))[0],context);
+vm.runInContext('renderCalcCustomInputs()',context);
+assert.match(elements.calcCustomRow.innerHTML,/id="calcCustom_peraa"/);
+assert.match(elements.calcCustomRow.innerHTML,/value="0.00"/);
+assert.equal(context.deductionCategories.length,0);
+elements.calcCustom_peraa={value:'500'};
+assert.equal(vm.runInContext('activeCustomDeductions(20000,collectCustomOverrides())[0].amount',context),500);
+context.deductionCategories=[{id:7,name:'PERAA',status:'Active',type:'fixed',amount:500}];
+vm.runInContext('openPeraaDeduction()',context);
+assert.equal(context.edited,7);
+vm.runInContext(payroll.match(/function activeCustomDeductions[\s\S]*?\n}/)[0],context);
+assert.equal(vm.runInContext('activeCustomDeductions(20000)[0].amount',context),500);
+context.deductionCategories[0].type='percent';context.deductionCategories[0].amount=2;
+assert.equal(vm.runInContext('activeCustomDeductions(20000)[0].amount',context),400);
+assert.equal(vm.runInContext('activeCustomDeductions(20000,{7:0}).length',context),0);
+vm.runInContext('renderCalcCustomInputs()',context);
+assert.equal((elements.calcCustomRow.innerHTML.match(/class="fi"/g)||[]).length,1);
+context.deductionCategories[0].status='Inactive';
+vm.runInContext('renderCalcCustomInputs()',context);
+assert.match(elements.calcCustomRow.innerHTML,/disabled/);
+assert.equal(vm.runInContext('activeCustomDeductions(20000).length',context),0);
+// Exercise server persistence using a mock connection, without touching live records.
+let savedPayroll;
+const connection={beginTransaction:async()=>{},commit:async()=>{},rollback:async()=>{},release(){},query:async(sql,params)=>{sql=sql.replaceAll('`','');
+ if(/INSERT INTO payroll_records/.test(sql)) {
+   const columns=sql.match(/payroll_records\s*\(([^)]+)\)/)[1].split(',').map(x=>x.trim());
+   assert.equal(columns.length,params.length);
+   savedPayroll=Object.fromEntries(columns.map((c,i)=>[c,params[i]]));
+ }
+ return [[]];
+}};
+const pool={getConnection:async()=>connection,execute:async sql=>[[/FROM payroll_records/.test(sql)?savedPayroll:/FROM phil_data|FROM pag_data/.test(sql)?{}:null].filter(Boolean)]};
+const serverContext=vm.createContext({module:{exports:{}},require:name=>name==='mysql2/promise'?{createPool:()=>pool}:name==='./db/state-writer'?require('../server/db/state-writer'):{},process:{env:{}},console});
+vm.runInContext(fs.readFileSync(__dirname+'/../server/db.js','utf8'),serverContext);
+(async()=>{
+ const customDeds=[{id:7,name:'PERAA',amount:400}];
+ await serverContext.module.exports.persistState({payrollRecords:[{empId:3,month:10,year:2026,gross:20000,net:19600,customDeds}]});
+ const state=await serverContext.module.exports.assembleState();
+ assert.equal(state.payrollRecords[0].customDeds[0].amount,400);
+ assert.equal(state.payrollRecords[0].customDeds[0].name,'PERAA');
+ console.log('PASS: PERAA configuration, fixed/percent calculations, employee override, disabled contributions, and database round-trip.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
