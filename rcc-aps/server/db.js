@@ -7,6 +7,12 @@ async function q(sql, params) {
   return rows;
 }
 
+async function readTables(queries) {
+  const result = [];
+  for (const sql of queries) result.push(await q(sql));
+  return result;
+}
+
 async function status() {
   try {
     const rows = await q('SELECT NOW() AS server_time, current_database() AS dbname');
@@ -35,26 +41,26 @@ async function assembleState() {
   return postgres.readTransaction(async () => {
     const [users, authRows, profRows, cashRows, bonusTypes, payoutRows,
             dedCat, payroll, sss, phil, pag, bir, cfg, leaveTypes,
-            leaveRecords, attendance, ranks, tlRecords, tlClasses] = await Promise.all([
-      q('SELECT * FROM users ORDER BY id'),
-      q('SELECT * FROM auth ORDER BY id'),
-      q('SELECT * FROM profiles'),
-      q('SELECT * FROM cash_advances'),
-      q('SELECT * FROM bonus_types ORDER BY id'),
-      q('SELECT * FROM bonus_payouts'),
-      q('SELECT * FROM deduction_categories ORDER BY id'),
-      q('SELECT * FROM payroll_records ORDER BY id'),
-      q('SELECT * FROM sss_table ORDER BY id'),
-      q('SELECT * FROM phil_data WHERE id = 1'),
-      q('SELECT * FROM pag_data WHERE id = 1'),
-      q('SELECT * FROM bir_table ORDER BY id'),
-      q('SELECT * FROM app_config'),
-      q('SELECT * FROM leave_types ORDER BY id'),
-      q('SELECT * FROM leave_records ORDER BY id'),
-      q('SELECT * FROM attendance ORDER BY id'),
-      q('SELECT * FROM teacher_ranks ORDER BY id'),
-      q('SELECT * FROM teaching_load_records ORDER BY id'),
-      q('SELECT * FROM teaching_load_classes ORDER BY id')
+            leaveRecords, attendance, ranks, tlRecords, tlClasses] = await readTables([
+      'SELECT * FROM users ORDER BY id',
+      'SELECT * FROM auth ORDER BY id',
+      'SELECT * FROM profiles',
+      'SELECT * FROM cash_advances',
+      'SELECT * FROM bonus_types ORDER BY id',
+      'SELECT * FROM bonus_payouts',
+      'SELECT * FROM deduction_categories ORDER BY id',
+      'SELECT * FROM payroll_records ORDER BY id',
+      'SELECT * FROM sss_table ORDER BY id',
+      'SELECT * FROM phil_data WHERE id = 1',
+      'SELECT * FROM pag_data WHERE id = 1',
+      'SELECT * FROM bir_table ORDER BY id',
+      'SELECT * FROM app_config',
+      'SELECT * FROM leave_types ORDER BY id',
+      'SELECT * FROM leave_records ORDER BY id',
+      'SELECT * FROM attendance ORDER BY id',
+      'SELECT * FROM teacher_ranks ORDER BY id',
+      'SELECT * FROM teaching_load_records ORDER BY id',
+      'SELECT * FROM teaching_load_classes ORDER BY id'
     ]);
 
     const num = v => { const n = parseFloat(v); return (isNaN(n) && v != null) ? v : (v == null ? null : n); };

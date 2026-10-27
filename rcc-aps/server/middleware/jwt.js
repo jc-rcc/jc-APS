@@ -42,7 +42,7 @@ async function requireAuth(req, res, next) {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    const rows = await require('../db').q('SELECT id, email, role, status FROM auth WHERE id=?', [payload.id]);
+    const rows = await require('../db').q('SELECT id, email, role, status FROM auth WHERE id=$1', [payload.id]);
     const account = rows[0];
     if (!account || account.status !== 'Active' || !require('../school-identity').isSchoolEmail(account.email)) return res.status(401).json({ok:false,error:'Account unavailable. Please log in again.'});
     req.user = { ...payload, role:account.role, status:account.status };

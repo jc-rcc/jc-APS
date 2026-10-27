@@ -52,7 +52,9 @@ async function run() {
     const login=await request('/api/auth/login',null,{email:role+'@rcc.edu.ph',password});
     assert.equal(login.status,200);tokens[role]=login.data.token;
   }
-  const employee=(await request('/api/data',tokens.employee)).data;
+  const employeeResponse=await request('/api/data',tokens.employee);
+  assert.equal(employeeResponse.status,200,JSON.stringify(employeeResponse.data));
+  const employee=employeeResponse.data;
   assert.deepEqual(employee.users.map(user=>user.id),[3]);assert.deepEqual(employee.auth,{});
   assert.deepEqual(Object.keys(employee.profiles),['3']);
   assert.equal((await request('/api/hris/sync',tokens.employee,{stateRevision:employee.stateRevision})).status,403);
