@@ -22,5 +22,3 @@ For local startup, copy `rcc-aps/.env.example` to `rcc-aps/.env` and configure o
 The PostgreSQL schema is [rcc-aps/server/db/sql/postgres.sql](rcc-aps/server/db/sql/postgres.sql). The old MySQL dump cannot be imported into Supabase.
 
 The original institutional repository and infrastructure are outside this assignment's scope.
-
-Read the [English and Tagalog presentation script](PRESENTATION_SCRIPT.md) for the deployment walkthrough and submission links.
